@@ -7,6 +7,9 @@ var bodyParser = require('body-parser')
 var expressErrorHandler = require('express-error-handler');
 var indexRouter = require('./routes/index')
 var loginRouter = require('./routes/login')
+var sign_upRouter = require('./routes/sign_up')
+var lpgRouter = require('./routes/lpg')
+var weatherRouter = require('./routes/weather')
 var app = express();
 
 // get port
@@ -25,8 +28,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 //
 app.use('/login',loginRouter);  // login page route
+app.use('/weather',weatherRouter)
+app.use('/lpg',lpgRouter)
+app.use('/signup',sign_upRouter); // sign up page route
 app.use('/', indexRouter);  // main page route
-
 
 //모든 router 처리가 끝난 후 404 오류 페이지 처리
 var errorHandler = expressErrorHandler({

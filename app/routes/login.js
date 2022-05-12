@@ -1,5 +1,5 @@
 var express = require('express')
-var router = express.Router();
+var router = express.Router()
 
 /*
 //라우터 객체 참조
