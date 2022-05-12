@@ -10,6 +10,7 @@ var loginRouter = require('./routes/login')
 var sign_upRouter = require('./routes/sign_up')
 var lpgRouter = require('./routes/lpg')
 var weatherRouter = require('./routes/weather')
+var menuRouter = require('./routes/menu')
 var app = express();
 
 // get port
@@ -19,14 +20,21 @@ app.set('port',port);
 //for using bodyParser
 app.use(bodyParser.urlencoded({ extended: false }));
 
+
+
 //ejs engine for html
 app.set('views',__dirname+'/views')
 app.set('view engine', 'ejs');
 app.engine('html', require('ejs').renderFile);
 app.use(express.static(path.join(__dirname, 'public')));
 //
+//
+app.use('/js', express.static(__dirname + '/node_modules/bootstrap/dist/js')); // redirect bootstrap JS
+app.use('/css', express.static(__dirname + '/node_modules/bootstrap/dist/css')); // redirect CSS bootstrap
+
 
 //
+app.use('/menu',menuRouter)
 app.use('/login',loginRouter);  // login page route
 app.use('/weather',weatherRouter)
 app.use('/lpg',lpgRouter)
