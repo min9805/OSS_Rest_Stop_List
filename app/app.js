@@ -7,7 +7,7 @@ var bodyParser = require('body-parser')
 var expressErrorHandler = require('express-error-handler');
 var indexRouter = require('./routes/index')
 var loginRouter = require('./routes/login')
-var sign_upRouter = require('./routes/sign_up')
+var signupRouter = require('./routes/signup')
 var lpgRouter = require('./routes/lpg')
 var weatherRouter = require('./routes/weather')
 var menuRouter = require('./routes/menu')
@@ -40,7 +40,7 @@ app.use('/menu',menuRouter)
 app.use('/login',loginRouter);  // login page route
 app.use('/weather',weatherRouter)
 app.use('/lpg',lpgRouter)
-app.use('/signup',sign_upRouter); // sign up page route
+app.use('/signup',signupRouter); // sign up page route
 app.use('/', indexRouter);  // main page route
 
 
