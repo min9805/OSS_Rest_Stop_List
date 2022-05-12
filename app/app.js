@@ -12,6 +12,8 @@ var lpgRouter = require('./routes/lpg')
 var weatherRouter = require('./routes/weather')
 var menuRouter = require('./routes/menu')
 var app = express();
+var router = express.Router();
+
 
 // get port
 var port = process.env.PORT || 3000;
@@ -40,6 +42,8 @@ app.use('/weather',weatherRouter)
 app.use('/lpg',lpgRouter)
 app.use('/signup',sign_upRouter); // sign up page route
 app.use('/', indexRouter);  // main page route
+
+
 
 //모든 router 처리가 끝난 후 404 오류 페이지 처리
 var errorHandler = expressErrorHandler({
