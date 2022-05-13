@@ -7,13 +7,15 @@ var bodyParser = require('body-parser')
 var expressErrorHandler = require('express-error-handler');
 var indexRouter = require('./routes/index')
 var loginRouter = require('./routes/login')
-var sign_upRouter = require('./routes/sign_up')
+var signupRouter = require('./routes/signup')
 var lpgRouter = require('./routes/lpg')
 var weatherRouter = require('./routes/weather')
 var menuRouter = require('./routes/menu')
 var app = express();
 var router = express.Router();
 
+var cookieParser = require('cookie-parser')
+var ExpressSession = require('express-session')
 
 // get port
 var port = process.env.PORT || 3000;
@@ -40,10 +42,17 @@ app.use('/menu',menuRouter)
 app.use('/login',loginRouter);  // login page route
 app.use('/weather',weatherRouter)
 app.use('/lpg',lpgRouter)
-app.use('/signup',sign_upRouter); // sign up page route
+app.use('/signup',signupRouter); // sign up page route
 app.use('/', indexRouter);  // main page route
 
 
+//Session 처리
+app.use(cookieParser());
+app.use(ExpressSession({
+    secret:'key',
+    resave: true,
+    saveUninitialized:true
+}));
 
 //모든 router 처리가 끝난 후 404 오류 페이지 처리
 var errorHandler = expressErrorHandler({

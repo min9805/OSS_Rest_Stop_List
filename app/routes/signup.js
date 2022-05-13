@@ -3,7 +3,7 @@ var Conn = require('../database/Connection')
 var router = express.Router()
 
 router.get('/',function(req,res){
-    res.render('views/signup.html')
+    res.render('signup.html')
 });
 
 
@@ -20,11 +20,11 @@ router.post('/process', function(req, res) {
             if(err){
                 console.error(err.stack);
                 res.writeHead('200', { 'Content-Type': 'text/html;charset=utf8' });
-                res.write('<h1>추가 중 오류</h1>');
+                res.write('<h1>ID가 중복되었습니다. 다른 ID를 사용해주세요.</h1>');
                 res.write('<div><p>Param name : ' + paramName + '</p></div>');
                 res.write('<div><p>Param id : ' + paramId + '</p></div>');
                 res.write('<div><p>Param password : ' + paramPassword + '</p></div>');
-                res.write("<br><br><a href ='/login.html'>로그인 페이지로 돌아가기</a>");
+                res.write("<br><br><a href ='/login'>로그인 페이지로 돌아가기</a>");
                 res.end();
             
             return;
@@ -37,14 +37,14 @@ router.post('/process', function(req, res) {
                 res.write('<div><p>Param name : ' + paramName + '</p></div>');
                 res.write('<div><p>Param id : ' + paramId + '</p></div>');
                 res.write('<div><p>Param password : ' + paramPassword + '</p></div>');
-                res.write("<br><br><a href ='/login.html'>로그인 페이지로 돌아가기</a>");
+                res.write("<br><br><a href ='/login'>로그인 페이지로 돌아가기</a>");
                 res.end();
             } else {
                 res.writeHead('200', { 'Content-Type': 'text/html;charset=utf8' });
                 res.write('<h1>회원가입 실패.</h1>');
                 res.write('<div><p>Param id : ' + paramId + '</p></div>');
                 res.write('<div><p>Param password : ' + paramPassword + '</p></div>');
-                res.write("<br><br><a href ='/login.html'>로그인 페이지로 돌아가기</a>");
+                res.write("<br><br><a href ='/login'>로그인 페이지로 돌아가기</a>");
                 res.end();
             }
             

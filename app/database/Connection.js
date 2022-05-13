@@ -40,7 +40,39 @@ var adduser = function(name, id, password, callback) {
     })
 }
 
+var authUser = function(id, password, callback) {
+    console.log('authUser 호출');
+
+    pool.getConnection(function(err, conn) {
+        if(err){
+            if(conn){
+                conn.release();
+            }
+
+            callback(err, null);
+            return;
+        }
+        
+        var colums = ['name', 'id'];
+        var tablename = 'users';
+
+        var exec = conn.query("select ?? from ?? where id = ? and password = ?",
+            [colums, tablename, id, password], function(err, rows) {
+                conn.release();
+                
+                if(rows.length >0){
+                    console.log('Id [%s], password [$s] 일치하는 사용자 찾음', id, password);
+                    callback(null, rows);
+                } else {
+                    console.log('일치하는 사용자 없음');
+                    callback(null, null);
+                }
+            }
+        );
+    })
+}
+
 module.exports.pool = pool;
-//module.exports.login = login;
+module.exports.authUser = authUser;
 module.exports.adduser = adduser;
 //module.exports.listuser = listuser;
