@@ -11,6 +11,7 @@ var signupRouter = require('./routes/signup')
 var lpgRouter = require('./routes/lpg')
 var weatherRouter = require('./routes/weather')
 var menuRouter = require('./routes/menu')
+var csvRouter = require('./routes/csv')
 var app = express();
 var router = express.Router();
 
@@ -36,6 +37,7 @@ app.use('/css', express.static(__dirname + '/node_modules/bootstrap/dist/css'));
 
 
 //
+app.use('/csv',csvRouter)
 app.use('/menu',menuRouter)
 app.use('/login',loginRouter);  // login page route
 app.use('/weather',weatherRouter)

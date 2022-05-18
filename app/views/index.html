@@ -12,6 +12,8 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
         <!-- Core theme CSS (includes Bootstrap)-->
         <link href="css/styles.css" rel="stylesheet" />
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+
     </head>
     <body class="d-flex flex-column h-100">
         <main class="flex-shrink-0">
@@ -59,9 +61,54 @@
                                 </div>
                             </div>
                         </div>
-                        <!--여기 image 자리에 지도 api 삽입-->
-                        <div class="col-xl-5 col-xxl-6 d-none d-xl-block text-center"><img class="img-fluid rounded-3 my-5" src="https://dummyimage.com/600x400/343a40/6c757d" alt="..." /></div>
-                    </div>
+                        
+                        <div id="map" style="width:600px;height:400px;"></div>
+                        <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=c71c02e15245260c3350614980ba87c8"></script>
+                        <!-- services와 clusterer, drawing 라이브러리 불러오기 -->
+                        <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=APIKEY&libraries=services,clusterer,drawing"></script>
+
+                        <script type="text/javascript">
+                            var container = document.getElementById('map'); //지도를 담을 영역의 DOM 레퍼런스
+                            var options = { //지도를 생성할 때 필요한 기본 옵션
+                            center: new kakao.maps.LatLng(33.450701, 126.570667), //지도의 중심좌표.
+                                level: 3 //지도의 레벨(확대, 축소 정도)
+                            };
+                            
+                            var testA1 = [
+                                210352512672,
+                                26871772376272,
+                                7726284477,
+                                277457742787
+                            ]
+                            
+                            var filename = "/csv"
+                            // 아래 함수는 10번 고속도로의 모든 이정표의 x,y 좌표값을 linepath 변수에 저장
+                            $.ajax({
+                                url: filename,
+                                dataType: 'text',
+                                success: function(data){
+                                    var allRows = data.split(/\r?\n|\r/);
+                                    $('#testArea').append(allRows)
+                                }
+                            });
+                            
+                            var linepath = [
+                                new kakao.maps.LatLng(33.452344169439975, 126.56878163224233),
+                                new kakao.maps.LatLng(33.452739313807456, 126.5709308145358),
+                                new kakao.maps.LatLng(33.45178067090639, 126.5726886938753)
+                            ]
+                            var polyline = new kakao.maps.Polyline({
+                            map: map,
+                            path: linepath,
+                            strokeWeight: 2,
+                            strokeColor: '#FF00FF',
+                            strokeOpacity: 0.8,
+                            strokeStyle: 'dashed'
+                            });
+                            var map = new kakao.maps.Map(container, options); //지도 생성 및 객체 리턴
+                            polyline.set(map)
+                        </script>
+                    </div>  
                 </div>
             </header>
             <!-- Features section-->
@@ -103,7 +150,7 @@
                     <div class="row gx-5 justify-content-center">
                         <div class="col-lg-10 col-xl-7">
                             <div class="text-center">
-                                <div class="fs-4 mb-4 fst-italic">이 아래는 그다지 필요하지 않을것 같으니 일단 두고 나중에 전부삭제</div>
+                                <div class="fs-4 mb-4 fst-italic" id ="testArea">이 아래는 그다지 필요하지 않을것 같으니 일단 두고 나중에 전부삭제</div>
                                 <div class="d-flex align-items-center justify-content-center">
                                     <img class="rounded-circle me-3" src="https://dummyimage.com/40x40/ced4da/6c757d" alt="..." />
                                     <div class="fw-bold">
