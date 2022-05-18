@@ -45,83 +45,202 @@
                     </div>
                 </div>
             </nav>
+
             <!-- Header-->
             <header class="py-5">
                 <div class="container px-5">
                     <div class="row justify-content-center">
                         <div class="col-lg-8 col-xxl-6">
                             <div class="text-center my-5">
-                                <h1 class="fw-bolder mb-3">휴게소 메뉴 정보 .</h1>
-                                <p class="lead fw-normal text-muted mb-4">Start Bootstrap was built on the idea that quality, functional website templates and themes should be available to everyone. Use our open source, free products, or support us by purchasing one of our premium products or services.</p>
-                                <a class="btn btn-primary btn-lg" href="#scroll-target">이 자리에 드랍다운 2개 넣고, 각 고속도로, 휴게소 선택하도록</a>
+                                <h1 class="fw-bolder mb-3">휴게소 메뉴 정보</h1>
+                                <p class="lead fw-normal text-muted mb-4">Just search the name of the rest stop,<br>You'll find out what kind of food there is at the rest area.</p>
+                                <p><h3>검색할 휴게소의 이름을 입력하세요</h3></p>
+                                
+                                <input type="text" placeholder="내용을 입력하세요" id="menuname"><input type="button"  onclick="Showmenu()" value="확인">
+                                </a>
                             </div>
                         </div>
                     </div>
                 </div>
             </header>
-            <!-- About section one-->
-            <section class="py-5 bg-light" id="scroll-target">
-                <div class="container px-5 my-5">
-                    <div class="row gx-5 align-items-center">
-                        <div class="col-lg-6"><img class="img-fluid rounded mb-5 mb-lg-0" src="https://dummyimage.com/600x400/343a40/6c757d" alt="..." /></div>
-                        <div class="col-lg-6">
-                            <h2 class="fw-bolder">Our founding</h2>
-                            <p class="lead fw-normal text-muted mb-0">Lorem ipsum dolor sit amet consectetur adipisicing elit. Iusto est, ut esse a labore aliquam beatae expedita. Blanditiis impedit numquam libero molestiae et fugit cupiditate, quibusdam expedita, maiores eaque quisquam.</p>
-                        </div>
-                    </div>
-                </div>
-            </section>
-            <!-- About section two-->
-            <section class="py-5">
-                <div class="container px-5 my-5">
-                    <div class="row gx-5 align-items-center">
-                        <div class="col-lg-6 order-first order-lg-last"><img class="img-fluid rounded mb-5 mb-lg-0" src="https://dummyimage.com/600x400/343a40/6c757d" alt="..." /></div>
-                        <div class="col-lg-6">
-                            <h2 class="fw-bolder">Growth &amp; beyond</h2>
-                            <p class="lead fw-normal text-muted mb-0">Lorem ipsum dolor sit amet consectetur adipisicing elit. Iusto est, ut esse a labore aliquam beatae expedita. Blanditiis impedit numquam libero molestiae et fugit cupiditate, quibusdam expedita, maiores eaque quisquam.</p>
-                        </div>
-                    </div>
-                </div>
-            </section>
-            <!-- Team members section-->
+
+            <!--추천메뉴-->
             <section class="py-5 bg-light">
-                <div class="container px-5 my-5">
+                <div class="container px-2 my-2">
                     <div class="text-center">
-                        <h2 class="fw-bolder">Our team</h2>
-                        <p class="lead fw-normal text-muted mb-5">Dedicated to quality and your success</p>
+                        <h2 class="fw-bolder">추천메뉴</h2>
+                        <p class="lead fw-normal text-muted mb-5">Recommend the menu you can eat at the rest stop</p>
                     </div>
                     <div class="row gx-5 row-cols-1 row-cols-sm-2 row-cols-xl-4 justify-content-center">
                         <div class="col mb-5 mb-5 mb-xl-0">
                             <div class="text-center">
                                 <img class="img-fluid rounded-circle mb-4 px-4" src="https://dummyimage.com/150x150/ced4da/6c757d" alt="..." />
-                                <h5 class="fw-bolder">Ibbie Eckart</h5>
-                                <div class="fst-italic text-muted">Founder &amp; CEO</div>
+                                <h5 class="fw-bolder"><recommend1></recommend1></h5>
+                                <div class="fst-italic text-muted"><rec1></rec1></div>
                             </div>
                         </div>
                         <div class="col mb-5 mb-5 mb-xl-0">
                             <div class="text-center">
                                 <img class="img-fluid rounded-circle mb-4 px-4" src="https://dummyimage.com/150x150/ced4da/6c757d" alt="..." />
-                                <h5 class="fw-bolder">Arden Vasek</h5>
-                                <div class="fst-italic text-muted">CFO</div>
+                                <h5 class="fw-bolder"><recommend2></recommend2></h5>
+                                <div class="fst-italic text-muted"><rec2></rec2></div>
                             </div>
                         </div>
                         <div class="col mb-5 mb-5 mb-sm-0">
                             <div class="text-center">
                                 <img class="img-fluid rounded-circle mb-4 px-4" src="https://dummyimage.com/150x150/ced4da/6c757d" alt="..." />
-                                <h5 class="fw-bolder">Toribio Nerthus</h5>
-                                <div class="fst-italic text-muted">Operations Manager</div>
+                                <h5 class="fw-bolder"><recommend3></recommend3></h5>
+                                <div class="fst-italic text-muted"><rec3></rec3></div>
                             </div>
                         </div>
-                        <div class="col mb-5">
-                            <div class="text-center">
-                                <img class="img-fluid rounded-circle mb-4 px-4" src="https://dummyimage.com/150x150/ced4da/6c757d" alt="..." />
-                                <h5 class="fw-bolder">Malvina Cilla</h5>
-                                <div class="fst-italic text-muted">CTO</div>
                             </div>
                         </div>
                     </div>
                 </div>
             </section>
+
+
+            <!--menu1-->  
+            <section class="py-3">
+                <div class="container px-0.1 my-0.1">
+                    <div class="text-center">
+                        <h4 class="fw-bolder"> <menu1></menu1></h4>
+                </div>
+            </section>  
+            
+            <section class="py-5 bg-light" id="scroll-target">
+                <div class="container px-2 my-2">
+                    <div class="text-center">
+                        <h2 class="fw-bolder"><foodname1></foodname1></h2>
+                        <p class="lead fw-normal text-muted mb-0"><foodcost1></foodcost1></p>
+                    </div>
+                </div>
+            </section>
+
+
+            <!--menu2-->
+            <section class="py-3">
+                <div class="container px-0.1 my-0.1">
+                    <div class="text-center">
+                        <h4 class="fw-bolder"> <menu2></menu2></h4>
+                </div>
+            </section>  
+
+            <section class="py-5 bg-light" id="scroll-target">
+                <div class="container px-2 my-2">
+                    <div class="text-center">
+                        <h2 class="fw-bolder"><foodname2></foodname2></h2>
+                        <p class="lead fw-normal text-muted mb-0"><foodcost2></foodcost2></p>
+                    </div>
+                </div>
+            </section>
+
+
+            <!--menu3-->
+            <section class="py-3">
+                <div class="container px-0.1 my-0.1">
+                    <div class="text-center">
+                        <h4 class="fw-bolder"> <menu3></menu3> </h4>
+                </div>
+            </section>  
+
+            <section class="py-5 bg-light" id="scroll-target">
+                <div class="container px-2 my-2">
+                    <div class="text-center">
+                        <h2 class="fw-bolder"><foodname3></foodname3></h2>
+                        <p class="lead fw-normal text-muted mb-0"><foodcost3></foodcost3></p>
+                    </div>
+                </div>
+            </section>
+
+
+            <!--menu4-->
+            <section class="py-3">
+                <div class="container px-0.1 my-0.1">
+                    <div class="text-center">
+                        <h4 class="fw-bolder"> <menu4></menu4></h4>
+                </div>
+            </section>  
+
+            <section class="py-5 bg-light" id="scroll-target">
+                <div class="container px-2 my-2">
+                    <div class="text-center">
+                            <h2 class="fw-bolder"><foodname4></foodname4></h2>
+                            <p class="lead fw-normal text-muted mb-0"><foodcost4></foodcost4></p>
+                    </div>
+                </div>
+            </section>
+
+
+            <!--menu5-->
+            <section class="py-3">
+                <div class="container px-0.1 my-0.1">
+                    <div class="text-center">
+                        <h4 class="fw-bolder"> <menu5></menu5> </h4>
+                </div>
+            </section>  
+
+            <section class="py-5 bg-light" id="scroll-target">
+                <div class="container px-2 my-2">
+                    <div class="text-center">
+                        <h2 class="fw-bolder"><foodname5></foodname5></h2>
+                        <p class="lead fw-normal text-muted mb-0"><foodcost5></foodcost5></p>
+                    </div>
+                </div>
+            </section>
+            
+
+            <!--menu6-->
+            <section class="py-3">
+                <div class="container px-0.1 my-0.1">
+                    <div class="text-center">
+                        <h4 class="fw-bolder"> <menu6></menu6> </h4>
+                </div>
+            </section>  
+
+            <section class="py-5 bg-light" id="scroll-target">
+                <div class="container px-2 my-2">
+                    <div class="text-center">
+                        <h2 class="fw-bolder"><foodname6></foodname6></h2>
+                        <p class="lead fw-normal text-muted mb-0"><foodcost6></foodcost6></p>
+                    </div>
+                </div>
+            </section>    
+
+            <!--menu7-->
+            <section class="py-3">
+                <div class="container px-0.1 my-0.1">
+                    <div class="text-center">
+                        <h4 class="fw-bolder"> <menu7></menu7> </h4>
+                </div>
+            </section>  
+
+            <section class="py-5 bg-light" id="scroll-target">
+                <div class="container px-2 my-2">
+                    <div class="text-center">
+                        <h2 class="fw-bolder"><foodname7></foodname7></h2>
+                        <p class="lead fw-normal text-muted mb-0"><foodcost7></foodcost6></p>
+                    </div>
+                </div>
+            </section>  
+
+            <!--menu8-->
+            <section class="py-3">
+                <div class="container px-0.1 my-0.1">
+                    <div class="text-center">
+                        <h4 class="fw-bolder"> <menu8></menu8> </h4>
+                </div>
+            </section>  
+
+            <section class="py-5 bg-light" id="scroll-target">
+                <div class="container px-2 my-2">
+                    <div class="text-center">
+                        <h2 class="fw-bolder"><foodname8></foodname8></h2>
+                        <p class="lead fw-normal text-muted mb-0"><foodcost8></foodcost8></p>
+                    </div>
+                </div>
+            </section>        
+
         </main>
         <!-- Footer-->
         <footer class="bg-dark py-4 mt-auto">
@@ -138,6 +257,75 @@
                 </div>
             </div>
         </footer>
+
+        <!--fetch로 오픈 api 데이터 끌어오기-->
+        <script>  
+
+            function Showmenu() {
+            menuname = document.getElementById('menuname').value
+
+            fetch('http://data.ex.co.kr/openapi/restinfo/restBestfoodList?key=6806352377&type=json&numOfRows=1000' + '&stdRestNm='+menuname).then(function(response){
+                  method: 'GET';
+                  body: JSON.stringify(this.obj)
+                  response.text().then(function(text){
+                  
+                  //데이터 정렬 및 text data-> array data 변환
+                  index1=text.indexOf('[')
+                  index2=text.indexOf(']')
+                  ndata=text.substr(index1+1, index2-index1+1)
+                  nndata=ndata.split('},');
+                  
+                  for(let i=0; i<8; i++){
+                    index3=nndata[i].indexOf('"foodNm":"')
+                    index4=nndata[i].indexOf('"foodCost":"')
+                    index5=nndata[i].indexOf('"etc"')
+                    foodname=nndata[i].substr(index3+10, index4-index3-12)
+                    foodcost=nndata[i].substr(index4+12, index5-index4-14)
+                    console.log(foodname,foodcost)
+        
+                    //foodname 
+                    document.querySelector('foodname'+String(i+1)).innerHTML = foodname;
+                    //foodcost
+                    document.querySelector('foodcost'+String(i+1)).innerHTML = foodcost+"원";
+                  
+                  }
+
+                    //recommend menu
+                    index3=nndata[1].indexOf('"foodNm":"')
+                    index4=nndata[1].indexOf('"foodCost":"')
+                    index5=nndata[1].indexOf('"etc"')
+                    foodname1=nndata[1].substr(index3+10, index4-index3-12)
+                    foodcost1=nndata[1].substr(index4+12, index5-index4-14)
+                    document.querySelector('recommend1').innerHTML = foodname1;
+                    document.querySelector('rec1').innerHTML = foodcost1+"원";
+
+                    index3=nndata[4].indexOf('"foodNm":"')
+                    index4=nndata[4].indexOf('"foodCost":"')
+                    index5=nndata[4].indexOf('"etc"')
+                    foodname1=nndata[4].substr(index3+10, index4-index3-12)
+                    foodcost1=nndata[4].substr(index4+12, index5-index4-14)
+                    document.querySelector('recommend2').innerHTML = foodname1;
+                    document.querySelector('rec2').innerHTML = foodcost1+"원";
+
+                    index3=nndata[5].indexOf('"foodNm":"')
+                    index4=nndata[5].indexOf('"foodCost":"')
+                    index5=nndata[5].indexOf('"etc"')
+                    foodname1=nndata[5].substr(index3+10, index4-index3-12)
+                    foodcost1=nndata[5].substr(index4+12, index5-index4-14)
+                    document.querySelector('recommend3').innerHTML = foodname1;
+                    document.querySelector('rec3').innerHTML = foodcost1+"원";
+
+                    for(let i=1; i<9; i++)
+                    document.querySelector('menu'+String(i)).innerHTML = "< "+"menu"+String(i)+" >";
+                
+            }
+        
+
+                )
+              })
+            }
+              </script>
+              
         <!-- Bootstrap core JS-->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
         <!-- Core theme JS-->
