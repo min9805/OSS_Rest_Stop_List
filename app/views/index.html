@@ -12,8 +12,183 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
         <!-- Core theme CSS (includes Bootstrap)-->
         <link href="css/styles.css" rel="stylesheet" />
-        
-        
+        <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=c71c02e15245260c3350614980ba87c8&libraries=services,clusterer,drawing"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+        <script>
+            // 고속도로 선택 함수
+            function showline(lineNumber){
+                // 이 위치에 이전에 켜져있는 map을 지우는 기능 넣어야해 ...
+                var container = document.getElementById('map'); //지도를 담을 영역의 DOM 레퍼런스
+                
+                var options = { //지도를 생성할 때 필요한 기본 옵션
+                center: new kakao.maps.LatLng(36.137944,128.044905), //지도의 중심좌표.
+                    level: 13 //지도의 레벨(확대, 축소 정도)
+                };
+                var map = new kakao.maps.Map(container, options); //지도 생성 및 객체 리턴
+                line = []
+                
+                //csv 파일에서 이정 좌표 가져와서 line 변수에 저장
+                $.ajax({
+                url: 'data.csv',
+                dataType: 'text',
+                async: false,
+                success: function(data){
+                    var allRows = data.split(/\r?\n|\r/);
+                    
+                    for (var singleRow = 0; singleRow < allRows.length; singleRow++) {
+                        var rowCells = allRows[singleRow].split(',');
+                        if(rowCells[0] == lineNumber){
+                            line.push(new kakao.maps.LatLng(rowCells[3],rowCells[4]))
+                        }
+                    }
+                }
+                });
+                var polyline = new kakao.maps.Polyline({
+                    path: line, // 선을 구성하는 좌표배열 입니다
+                    strokeWeight: 5, // 선의 두께 입니다
+                    strokeColor: '#FF4500', // 선의 색깔입니다
+                    strokeOpacity: 0.7, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
+                    strokeStyle: 'solid' // 선의 스타일입니다
+                });
+                polyline.setMap(map)
+                
+                
+                
+                // 1번 페이지
+                $.ajax({
+                    url: "http://data.ex.co.kr/openapi/business/conveniServiceArea?key=1817997939&type=json&numOfRows=99&pageNo=1",
+                    success: function(data){
+                        var userData = JSON.stringify(data);
+                        var result_str="";
+                        var routeCode = "";
+                        var svarAddr = "";
+                        var count = data["list"].length;
+                        
+                        for (var i =0; i<count; i++){
+                            routeCode = JSON.stringify(data["list"][i]["routeCode"]);
+                            svarAddr = JSON.stringify(data["list"][i]["svarAddr"]);
+                            if(routeCode.substring(1,5) === lineNumber){
+                                document.getElementById("testArea").innerHTML += routeCode.substring(1,5)+ " ";    
+                                var geocoder = new kakao.maps.services.Geocoder();
+
+                                // 주소로 좌표를 검색합니다
+                                geocoder.addressSearch(svarAddr, function(result, status) {
+
+                                    // 정상적으로 검색이 완료됐으면 
+                                    if (status === kakao.maps.services.Status.OK) {
+
+                                        var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+
+                                        // 결과값으로 받은 위치를 마커로 표시합니다
+                                        var marker = new kakao.maps.Marker({
+                                            map: map,
+                                            position: coords
+                                        });
+                                        
+                                        // 인포윈도우로 장소에 대한 설명을 표시합니다
+                                        var infowindow = new kakao.maps.InfoWindow({
+                                            content: '<div style="width:150px;text-align:center;padding:6px 0;" id ="position_ex"></div>'
+                                        });
+                                        document.getElementById("position_ex").innerHTML = svarAddr;
+                                        infowindow.open(map, marker);
+                                    } 
+                                });
+                            }
+                            
+                        }
+                    },
+                })
+                // 2번 페이지
+                $.ajax({
+                    url: "http://data.ex.co.kr/openapi/business/conveniServiceArea?key=1817997939&type=json&numOfRows=99&pageNo=2",
+                    success: function(data){
+                        var userData = JSON.stringify(data);
+                        var result_str="";
+                        var routeCode = "";
+                        var svarAddr = "";
+                        var count = data["list"].length;
+                        
+                        for (var i =0; i<count; i++){
+                            routeCode = JSON.stringify(data["list"][i]["routeCode"]);
+                            svarAddr = JSON.stringify(data["list"][i]["svarAddr"]);
+                            if(routeCode.substring(1,5) === lineNumber){
+                                document.getElementById("testArea").innerHTML += routeCode.substring(1,5)+ " ";    
+                                var geocoder = new kakao.maps.services.Geocoder();
+
+                                // 주소로 좌표를 검색합니다
+                                geocoder.addressSearch(svarAddr, function(result, status) {
+
+                                    // 정상적으로 검색이 완료됐으면 
+                                    if (status === kakao.maps.services.Status.OK) {
+
+                                        var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+
+                                        // 결과값으로 받은 위치를 마커로 표시합니다
+                                        var marker = new kakao.maps.Marker({
+                                            map: map,
+                                            position: coords
+                                        });
+                                        
+                                        // 인포윈도우로 장소에 대한 설명을 표시합니다
+                                        var infowindow = new kakao.maps.InfoWindow({
+                                            content: '<div style="width:150px;text-align:center;padding:6px 0;" id ="position"></div>'
+                                        });
+                                        document.getElementById("position").innerHTML = svarAddr;
+                                        infowindow.open(map, marker);
+                                    } 
+                                });
+                            }
+                            
+                        }
+                    },
+                })
+                // 3번 페이지
+                $.ajax({
+                    url: "http://data.ex.co.kr/openapi/business/conveniServiceArea?key=1817997939&type=json&numOfRows=99&pageNo=3",
+                    success: function(data){
+                        var userData = JSON.stringify(data);
+                        var result_str="";
+                        var routeCode = "";
+                        var svarAddr = "";
+                        var count = data["list"].length;
+                        
+                        for (var i =0; i<count; i++){
+                            routeCode = JSON.stringify(data["list"][i]["routeCode"]);
+                            svarAddr = JSON.stringify(data["list"][i]["svarAddr"]);
+                            if(routeCode.substring(1,5) === lineNumber){
+                                document.getElementById("testArea").innerHTML += routeCode.substring(1,5)+ " ";    
+                                var geocoder = new kakao.maps.services.Geocoder();
+
+                                // 주소로 좌표를 검색합니다
+                                geocoder.addressSearch(svarAddr, function(result, status) {
+
+                                    // 정상적으로 검색이 완료됐으면 
+                                    if (status === kakao.maps.services.Status.OK) {
+
+                                        var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+
+                                        // 결과값으로 받은 위치를 마커로 표시합니다
+                                        var marker = new kakao.maps.Marker({
+                                            map: map,
+                                            position: coords
+                                        });
+                                        
+                                        // 인포윈도우로 장소에 대한 설명을 표시합니다
+                                        var infowindow = new kakao.maps.InfoWindow({
+                                            content: '<div style="width:150px;text-align:center;padding:6px 0;" id ="position"></div>'
+                                        });
+                                        document.getElementById("position").innerHTML = svarAddr;
+                                        infowindow.open(map, marker);
+                                    } 
+                                });
+                            }
+                            
+                        }
+                    },
+                })
+                
+            }
+        </script>
     </head>
     <body class="d-flex flex-column h-100">
         <main class="flex-shrink-0">
@@ -57,51 +232,20 @@
                                 <p class="lead fw-normal text-white-50 mb-4">적당히 텍스트 삽입</p>
                                 <div class="dropdown">
                                     <button class ="btn btn-primary dropdown-toggle " data-bs-toggle="dropdown">
-                                        휴게소 선택
+                                        고속도로 선택
                                     </button>
                                     <div class ="dropdown-menu">
                                         <a class="dropdown-item" onclick="showline('0010')">경부선</a>
-                                        <a class="dropdown-item" onclick="showline('0600')">서울양양선</a>
-                                        <a class="dropdown-item" onclick="showline('0450')">중부내륙선</a>
+                                        <a class="dropdown-item" onclick="showline('0550')">중앙선</a>
+                                        <a class="dropdown-item" onclick="showline('0500')">영동선</a>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         
                         <div id="map" style="width:600px;height:400px;"></div>
-                        <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=c71c02e15245260c3350614980ba87c8"></script>
-                        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+                        
                         <script>
-                            var x;
-                            var y;
-                            
-                            // 경로 생성
-                            var linepath = []
-                            // 아래 함수는 10번 고속도로의 모든 이정표의 x,y 좌표값을 linepath 변수에 저장
-                            $.ajax({
-                                url: 'data.csv',
-                                dataType: 'text',
-                                async: false,
-                                success: function(data){
-                                    var allRows = data.split(/\r?\n|\r/);
-                                    
-                                    for (var singleRow = 0; singleRow < allRows.length; singleRow++) {
-                                        var rowCells = allRows[singleRow].split(',');
-                                        if(rowCells[0] == '0010'){
-                                            linepath.push(new kakao.maps.LatLng(rowCells[3],rowCells[4]))
-                                        }
-                                    }
-                                    var rowCells = allRows[1].split(',');
-                                    //linepath.append(new kakao.maps.LatLng(rowCells[3],rowCells[4]))
-                                    x = rowCells[3]
-                                    y = rowCells[4]
-                                    $('#testArea').append(x)
-                                    
-                                }
-                            });
-                            //linepath.append(new kakao.maps.LatLng())
-                            
-                            
                             var container = document.getElementById('map'); //지도를 담을 영역의 DOM 레퍼런스
                             
                             var options = { //지도를 생성할 때 필요한 기본 옵션
@@ -110,51 +254,34 @@
                             };
                             var map = new kakao.maps.Map(container, options); //지도 생성 및 객체 리턴
                             
+                            // 마커표시                            
+                            var geocoder = new kakao.maps.services.Geocoder();
                             
-                        
-                            var polyline = new kakao.maps.Polyline({
-                                path: linepath, // 선을 구성하는 좌표배열 입니다
-                                strokeWeight: 5, // 선의 두께 입니다
-                                strokeColor: '#FF4500', // 선의 색깔입니다
-                                strokeOpacity: 0.7, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
-                                strokeStyle: 'solid' // 선의 스타일입니다
+                            // 휴게소 주소 입력시, 마커 표시 및 이동
+                            geocoder.addressSearch('경기도 용인시 고림동9', function(result, status) {
+                                // 정상적으로 검색이 완료됐으면 
+                                
+                                if (status === kakao.maps.services.Status.OK) {
+
+                                    var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+                                    
+                                    // 결과값으로 받은 위치를 마커로 표시합니다
+                                    var marker = new kakao.maps.Marker({
+                                        map: map,
+                                        position: coords
+                                    });
+                                    
+                                    // 지도의 중심을 결과값으로 받은 위치로 이동시킵니다
+                                    map.setLevel(4);
+                                    map.setCenter(new kakao.maps.LatLng(result[0].y, result[0].x));
+                                    
+                                }
                             });
                             
-                            polyline.setMap(map)
+                            
+                            
+                            
 
-                            function showline(lineNumber){
-                                var container = document.getElementById('map'); //지도를 담을 영역의 DOM 레퍼런스
-                                
-                                var options = { //지도를 생성할 때 필요한 기본 옵션
-                                center: new kakao.maps.LatLng(36.137944,128.044905), //지도의 중심좌표.
-                                    level: 13 //지도의 레벨(확대, 축소 정도)
-                                };
-                                var map = new kakao.maps.Map(container, options); //지도 생성 및 객체 리턴
-                                line = []
-                                $.ajax({
-                                url: 'data.csv',
-                                dataType: 'text',
-                                async: false,
-                                success: function(data){
-                                    var allRows = data.split(/\r?\n|\r/);
-                                    
-                                    for (var singleRow = 0; singleRow < allRows.length; singleRow++) {
-                                        var rowCells = allRows[singleRow].split(',');
-                                        if(rowCells[0] == lineNumber){
-                                            line.push(new kakao.maps.LatLng(rowCells[3],rowCells[4]))
-                                        }
-                                    }
-                                }
-                                });
-                                var polyline = new kakao.maps.Polyline({
-                                    path: line, // 선을 구성하는 좌표배열 입니다
-                                    strokeWeight: 5, // 선의 두께 입니다
-                                    strokeColor: '#FF4500', // 선의 색깔입니다
-                                    strokeOpacity: 0.7, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
-                                    strokeStyle: 'solid' // 선의 스타일입니다
-                                });
-                                polyline.setMap(map)
-                            }
                         </script>
                     </div>  
                 </div>
