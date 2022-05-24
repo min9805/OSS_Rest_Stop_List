@@ -17,6 +17,10 @@ var router = express.Router();
 var cookieParser = require('cookie-parser')
 var ExpressSession = require('express-session')
 
+var database = require('./database/database');
+var config = require('./config');
+
+
 // get port
 var port = process.env.PORT || 3000;
 app.set('port',port);
@@ -64,9 +68,25 @@ app.use(expressErrorHandler.httpError(404));
 app.use(errorHandler);
 
 
+// 프로세스 종료 시에 데이터베이스 연결 해제
+process.on('SIGTERM', function () {
+    console.log("프로세스가 종료됩니다.");
+    app.close();
+});
+
+app.on('close', function () {
+	console.log("Express 서버 객체가 종료됩니다.");
+	if (database.db) {
+		database.db.close();
+	}
+});
+
 
 // for server listening 
 var server = http.createServer(app)
 server.listen(port,function(){
     console.log('익스프레스 서버를 시작했습니다.');
+
+    database.init(app, config);
 })
+

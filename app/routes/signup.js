@@ -1,5 +1,5 @@
 var express = require('express')
-var Conn = require('../database/Connection')
+var Conn = require('../database/database')
 var router = express.Router()
 
 router.get('/',function(req,res){
@@ -15,47 +15,66 @@ router.post('/process', function(req, res) {
     var paramPassword = req.body.password || req.query.password;
     //GET, POST 모두 고려해서 둘 다 검사
 
-    if(Conn.pool){
-        Conn.adduser(paramName, paramId, paramPassword, function(err, addedUser) {
-            if(err){
-                console.error(err.stack);
-                res.writeHead('200', { 'Content-Type': 'text/html;charset=utf8' });
-                res.write('<h1>ID가 중복되었습니다. 다른 ID를 사용해주세요.</h1>');
-                res.write('<div><p>Param name : ' + paramName + '</p></div>');
-                res.write('<div><p>Param id : ' + paramId + '</p></div>');
-                res.write('<div><p>Param password : ' + paramPassword + '</p></div>');
-                res.write("<br><br><a href ='/login'>로그인 페이지로 돌아가기</a>");
-                res.end();
-            
-            return;
+    // 데이터베이스 객체 참조
+	var database = req.app.get('database');
+	
+    // 데이터베이스 객체가 초기화된 경우, addUser 함수 호출하여 사용자 추가
+	if (database.db) {
+		addUser(database, paramId, paramPassword, paramName, function(err, addedUser) {
+            // 동일한 id로 추가하려는 경우 에러 발생 - 클라이언트로 에러 전송
+			if (err) {
+                console.error('사용자 추가 중 에러 발생 : ' + err.stack);
+                
+                res.writeHead('200', {'Content-Type':'text/html;charset=utf8'});
+				res.write('<h2>사용자 추가 중 에러 발생</h2>');
+                res.write('<p>' + err.stack + '</p>');
+				res.end();
+                
+                return;
             }
-            if (addedUser){
-                console.dir(addedUser);
-
-                res.writeHead('200', { 'Content-Type': 'text/html;charset=utf8' });
-                res.write('<h1>회원가입 성공</h1>');
-                res.write('<div><p>Param name : ' + paramName + '</p></div>');
-                res.write('<div><p>Param id : ' + paramId + '</p></div>');
-                res.write('<div><p>Param password : ' + paramPassword + '</p></div>');
-                res.write("<br><br><a href ='/login'>로그인 페이지로 돌아가기</a>");
-                res.end();
-            } else {
-                res.writeHead('200', { 'Content-Type': 'text/html;charset=utf8' });
-                res.write('<h1>회원가입 실패.</h1>');
-                res.write('<div><p>Param id : ' + paramId + '</p></div>');
-                res.write('<div><p>Param password : ' + paramPassword + '</p></div>');
-                res.write("<br><br><a href ='/login'>로그인 페이지로 돌아가기</a>");
-                res.end();
-            }
-            
-        })
-    }else{
-        res.writeHead('200', { 'Content-Type': 'text/html;charset=utf8' });
-        res.write('<h1>데이터베이스 연결 실패</h1>');
-        res.end();
-    }
-
-
+			
+            // 결과 객체 있으면 성공 응답 전송
+			if (addedUser) {
+				console.dir(addedUser);
+ 
+				res.writeHead('200', {'Content-Type':'text/html;charset=utf8'});
+				res.write('<h2>사용자 추가 성공</h2>');
+                res.write("<br><br><a href='/login'>다시 로그인하기</a>");
+				res.end();
+			} else {  // 결과 객체가 없으면 실패 응답 전송
+				res.writeHead('200', {'Content-Type':'text/html;charset=utf8'});
+				res.write('<h2>사용자 추가  실패</h2>');
+                res.write("<br><br><a href='/signup'>다시 가입하기</a>");
+				res.end();
+			}
+		});
+	} else {  // 데이터베이스 객체가 초기화되지 않은 경우 실패 응답 전송
+		res.writeHead('200', {'Content-Type':'text/html;charset=utf8'});
+		res.write('<h2>데이터베이스 연결 실패</h2>');
+		res.end();
+	}
+	
 });
+
+
+//사용자를 등록하는 함수
+var addUser = function(database, id, password, name, callback) {
+	console.log('addUser 호출됨.');
+	
+	// UserModel 인스턴스 생성
+	var user = new database.UserModel({"id":id, "password":password, "name":name});
+
+	// save()로 저장
+	user.save(function(err) {
+		if (err) {
+			callback(err, null);
+			return;
+		}
+		
+	    console.log("사용자 데이터 추가함.");
+	    callback(null, user);
+	     
+	});
+}
 
 module.exports = router
