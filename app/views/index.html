@@ -56,6 +56,7 @@
                 
                 
                 var userData;
+                var markers = [];
                 
                 // 1번 페이지
                 $.ajax({
@@ -66,42 +67,46 @@
                         //변수 설정
                         userData = data;
                     },
-                })
-                var markers = [];
-                var infomations =[];
-                var result_str="";
-                var routeCode = "";
-                var svarAddr = "";
-                var rest_name = "";
-                var data_count = userData["list"].length    // 데이터 개수 얻기
-                
-                for (var i =0; i<data_count; i++){
-                    routeCode = JSON.stringify(userData["list"][i]["routeCode"]);
-                    svarAddr = JSON.stringify(userData["list"][i]["svarAddr"]);
-                    rest_name = JSON.stringify(userData["list"][i]["serviceAreaName"]);
+                }).done(function() {
+                    var infomations =[];
+                    var result_str="";
+                    var routeCode = "";
+                    var svarAddr = "";
+                    var rest_name = "";
+                    var data_count = userData["list"].length    // 데이터 개수 얻기
                     
-                    if(routeCode.substring(1,5) === lineNumber){    //  고속도로 코드가 같다면
+                    for (var i =0; i<data_count; i++){
+                        routeCode = JSON.stringify(userData["list"][i]["routeCode"]);
+                        svarAddr = JSON.stringify(userData["list"][i]["svarAddr"]);
+                        rest_name = JSON.stringify(userData["list"][i]["serviceAreaName"]);
                         
-                        var geocoder = new kakao.maps.services.Geocoder();
-                        // 주소로 좌표를 검색합니다
-                        geocoder.addressSearch(svarAddr, function(result, status) {
-                            // 정상적으로 검색이 완료됐으면 
-                            if (status === kakao.maps.services.Status.OK) {
-                                //위치 저장
-                                var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
-                                
-                                var marker = new kakao.maps.Marker({
-                                    position: coords,
-                                    map: map
-                                });
-                                markers.push(marker);   // markers 로 정상적 push 수행 안됨
-                            }
-                        }); 
-                        
+                        if(routeCode.substring(1,5) === lineNumber){    //  고속도로 코드가 같다면
+                            
+                            var geocoder = new kakao.maps.services.Geocoder();
+                            // 주소로 좌표를 검색합니다
+                            geocoder.addressSearch(svarAddr, function(result, status) {
+                                // 정상적으로 검색이 완료됐으면 
+                                if (status === kakao.maps.services.Status.OK) {
+                                    //위치 저장
+                                    var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+                                    
+                                    var marker = new kakao.maps.Marker({
+                                        position: coords,
+                                        map: map
+                                    });
+                                    markers.push(marker);   // markers 로 정상적 push 수행 안됨
+                                }
+                            }); 
+                            
+                        }
                     }
-                }
-                
-                alert(markers.length)
+                })
+                setTimeout(() => {
+                    alert(markers.length);
+                    console.dir(markers);
+                }, 500);
+            }
+
                 /*
                 // 2번 페이지
                 $.ajax({
@@ -202,7 +207,7 @@
                     },
                 })
                 */
-            }
+            
         </script>
     </head>
     <body class="d-flex flex-column h-100">
