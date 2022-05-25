@@ -15,6 +15,7 @@
         <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=c71c02e15245260c3350614980ba87c8&libraries=services,clusterer,drawing"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
         <script>
+            
             // 고속도로 선택 함수
             function showline(lineNumber){
                 // 이 위치에 이전에 켜져있는 map을 지우는 기능 넣어야해 ...
@@ -54,50 +55,54 @@
                 
                 
                 
+                var userData;
+                
                 // 1번 페이지
                 $.ajax({
+                    
                     url: "http://data.ex.co.kr/openapi/business/conveniServiceArea?key=1817997939&type=json&numOfRows=99&pageNo=1",
+                    async:false,
                     success: function(data){
-                        var userData = JSON.stringify(data);
-                        var result_str="";
-                        var routeCode = "";
-                        var svarAddr = "";
-                        var count = data["list"].length;
-                        
-                        for (var i =0; i<count; i++){
-                            routeCode = JSON.stringify(data["list"][i]["routeCode"]);
-                            svarAddr = JSON.stringify(data["list"][i]["svarAddr"]);
-                            if(routeCode.substring(1,5) === lineNumber){
-                                document.getElementById("testArea").innerHTML += routeCode.substring(1,5)+ " ";    
-                                var geocoder = new kakao.maps.services.Geocoder();
-
-                                // 주소로 좌표를 검색합니다
-                                geocoder.addressSearch(svarAddr, function(result, status) {
-
-                                    // 정상적으로 검색이 완료됐으면 
-                                    if (status === kakao.maps.services.Status.OK) {
-
-                                        var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
-
-                                        // 결과값으로 받은 위치를 마커로 표시합니다
-                                        var marker = new kakao.maps.Marker({
-                                            map: map,
-                                            position: coords
-                                        });
-                                        
-                                        // 인포윈도우로 장소에 대한 설명을 표시합니다
-                                        var infowindow = new kakao.maps.InfoWindow({
-                                            content: '<div style="width:150px;text-align:center;padding:6px 0;" id ="position_ex"></div>'
-                                        });
-                                        document.getElementById("position_ex").innerHTML = svarAddr;
-                                        infowindow.open(map, marker);
-                                    } 
-                                });
-                            }
-                            
-                        }
+                        //변수 설정
+                        userData = data;
                     },
                 })
+                var markers = [];
+                var infomations =[];
+                var result_str="";
+                var routeCode = "";
+                var svarAddr = "";
+                var rest_name = "";
+                var data_count = userData["list"].length    // 데이터 개수 얻기
+                
+                for (var i =0; i<data_count; i++){
+                    routeCode = JSON.stringify(userData["list"][i]["routeCode"]);
+                    svarAddr = JSON.stringify(userData["list"][i]["svarAddr"]);
+                    rest_name = JSON.stringify(userData["list"][i]["serviceAreaName"]);
+                    
+                    if(routeCode.substring(1,5) === lineNumber){    //  고속도로 코드가 같다면
+                        
+                        var geocoder = new kakao.maps.services.Geocoder();
+                        // 주소로 좌표를 검색합니다
+                        geocoder.addressSearch(svarAddr, function(result, status) {
+                            // 정상적으로 검색이 완료됐으면 
+                            if (status === kakao.maps.services.Status.OK) {
+                                //위치 저장
+                                var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+                                
+                                var marker = new kakao.maps.Marker({
+                                    position: coords,
+                                    map: map
+                                });
+                                markers.push(marker);   // markers 로 정상적 push 수행 안됨
+                            }
+                        }); 
+                        
+                    }
+                }
+                
+                alert(markers.length)
+                /*
                 // 2번 페이지
                 $.ajax({
                     url: "http://data.ex.co.kr/openapi/business/conveniServiceArea?key=1817997939&type=json&numOfRows=99&pageNo=2",
@@ -106,15 +111,20 @@
                         var result_str="";
                         var routeCode = "";
                         var svarAddr = "";
+                        var rest_name = "";
                         var count = data["list"].length;
                         
                         for (var i =0; i<count; i++){
                             routeCode = JSON.stringify(data["list"][i]["routeCode"]);
                             svarAddr = JSON.stringify(data["list"][i]["svarAddr"]);
+                            rest_name = JSON.stringify(data["list"][i]["serviceAreaName"]);
+                            var infowindow = new kakao.maps.InfoWindow({
+                                            content: rest_name
+                            });
                             if(routeCode.substring(1,5) === lineNumber){
                                 document.getElementById("testArea").innerHTML += routeCode.substring(1,5)+ " ";    
                                 var geocoder = new kakao.maps.services.Geocoder();
-
+                                
                                 // 주소로 좌표를 검색합니다
                                 geocoder.addressSearch(svarAddr, function(result, status) {
 
@@ -122,19 +132,19 @@
                                     if (status === kakao.maps.services.Status.OK) {
 
                                         var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
-
+                                        var temp = i
+                                        
                                         // 결과값으로 받은 위치를 마커로 표시합니다
                                         var marker = new kakao.maps.Marker({
                                             map: map,
-                                            position: coords
+                                            position: coords,
                                         });
                                         
                                         // 인포윈도우로 장소에 대한 설명을 표시합니다
-                                        var infowindow = new kakao.maps.InfoWindow({
-                                            content: '<div style="width:150px;text-align:center;padding:6px 0;" id ="position"></div>'
-                                        });
-                                        document.getElementById("position").innerHTML = svarAddr;
-                                        infowindow.open(map, marker);
+                                        kakao.maps.event.addListener(marker, 'mouseover', makeOverListener(map, marker, infowindow));
+                                        kakao.maps.event.addListener(marker, 'mouseout', makeOutListener(infowindow));
+                                        document.getElementById("position_ex").innerHTML = svarAddr;
+                                        
                                     } 
                                 });
                             }
@@ -150,15 +160,20 @@
                         var result_str="";
                         var routeCode = "";
                         var svarAddr = "";
+                        var rest_name = "";
                         var count = data["list"].length;
                         
                         for (var i =0; i<count; i++){
                             routeCode = JSON.stringify(data["list"][i]["routeCode"]);
                             svarAddr = JSON.stringify(data["list"][i]["svarAddr"]);
+                            rest_name = JSON.stringify(data["list"][i]["serviceAreaName"]);
+                            var infowindow = new kakao.maps.InfoWindow({
+                                            content: rest_name
+                            });
                             if(routeCode.substring(1,5) === lineNumber){
                                 document.getElementById("testArea").innerHTML += routeCode.substring(1,5)+ " ";    
                                 var geocoder = new kakao.maps.services.Geocoder();
-
+                                
                                 // 주소로 좌표를 검색합니다
                                 geocoder.addressSearch(svarAddr, function(result, status) {
 
@@ -166,19 +181,19 @@
                                     if (status === kakao.maps.services.Status.OK) {
 
                                         var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
-
+                                        var temp = i
+                                        
                                         // 결과값으로 받은 위치를 마커로 표시합니다
                                         var marker = new kakao.maps.Marker({
                                             map: map,
-                                            position: coords
+                                            position: coords,
                                         });
                                         
                                         // 인포윈도우로 장소에 대한 설명을 표시합니다
-                                        var infowindow = new kakao.maps.InfoWindow({
-                                            content: '<div style="width:150px;text-align:center;padding:6px 0;" id ="position"></div>'
-                                        });
-                                        document.getElementById("position").innerHTML = svarAddr;
-                                        infowindow.open(map, marker);
+                                        kakao.maps.event.addListener(marker, 'mouseover', makeOverListener(map, marker, infowindow));
+                                        kakao.maps.event.addListener(marker, 'mouseout', makeOutListener(infowindow));
+                                        document.getElementById("position_ex").innerHTML = svarAddr;
+                                        
                                     } 
                                 });
                             }
@@ -186,7 +201,7 @@
                         }
                     },
                 })
-                
+                */
             }
         </script>
     </head>
@@ -242,7 +257,11 @@
                                 </div>
                             </div>
                         </div>
-                        
+                        <script>
+                            // 지도 구현 부분
+                        </script>
+
+
                         <div id="map" style="width:600px;height:400px;"></div>
                         
                         <script>
