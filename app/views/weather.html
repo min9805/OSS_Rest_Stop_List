@@ -299,10 +299,163 @@
                     })                           
                   })  
                 }
-            }
-   
+
+
+                //그래프 그리기
+                //온도, 습도, 풍속 데이터를 array에 저장하여 그래프에 넘겨줌
+                var tempdata = new Array(10);
+                var humidata = new Array(10);
+                var winddata = new Array(10);
+
+                name = document.getElementById('name').value
+
+                for(let j=0; j<7; j++){
+                    //present_time-3-j가 음수인 경우 방지
+                    if(present_time-3-j <0){
+                        time2 = present_time-3-j+24;
+                        date2 = yesterday_YYYYMMDD
+                        
+                    }
+                    else{
+                        time2 = present_time-3-j
+                        date2 = YYYYMMDD
+                    }
+
+                name = document.getElementById('name').value
+                fetch('http://data.ex.co.kr/openapi/restinfo/restWeatherList?key=6806352377&type=json&sdate='+ date2 +'&stdHour=' + ('0'+String(time2)).slice(-2)).then(function(response){
+                //testing
+               // fetch('http://data.ex.co.kr/openapi/restinfo/restWeatherList?key=test&type=json&sdate='+ "20220524" +'&stdHour='+ ('0'+ String(22-j)).slice(-2)).then(function(response){
+                    method: 'GET';
+                    body: JSON.stringify(this.obj)
+                    response.text().then(function(text){
+  
+                    //위와 같은 방식으로 데이터 정리
+                    index1=text.indexOf('[')
+                    index2=text.indexOf(']')
+                    ndata=text.substr(index1+1, index2-index1+1)
+                    nndata=ndata.split('},');
+               
+                         //ReststopName (휴게소 이름)  
+                         for(let i=0; i<nndata.length; i++){
+                         index3=nndata[i].indexOf('"unitName":"')
+                         index4=nndata[i].indexOf('"unitCode":"')
+                         ReststopName=nndata[i].substr(index3+12, index4-index3-14)
+
+                         
+                          if(ReststopName == name){
+                          //Weather  
+                          index5=nndata[i].indexOf('"weatherContents":"')
+                          index6=nndata[i].indexOf('"statusNo":"')
+                          Weather=nndata[i].substr(index5+19, index6-index5-21)
+            
+                          //temperature
+                          index7=nndata[i].indexOf('"tempValue":"')
+                          index8=nndata[i].indexOf('"dewValue":"')
+                          Temperature=nndata[i].substr(index7+13, index8-index7-20)
+            
+                          //humidity
+                          index9=nndata[i].indexOf('"humidityValue":"')
+                          index10=nndata[i].indexOf('"windContents":"')
+                          Humidity=nndata[i].substr(index9+17, index10-index9-26)
+            
+                  
+                          //wind
+                          index11=nndata[i].indexOf('"windValue":"')
+                          Wind=nndata[i].substr(index11+13,3)
+
+                          //어레이 tempdata, humidata, winddata에 각각 Temperature, Humidity, Wind 데이터 할당
+                          tempdata[j]=Temperature;
+                          humidata[j]=Humidity;
+                          winddata[j]=Wind;}  
+                          }                                               
+
+
+                        //temperature-graph
+                        new Chart(document.getElementById("temperature-graph"), {
+                            type: 'line',
+                            data: {
+                                labels: [ '9시간 전','8시간 전','7시간 전','6시간 전','5시간 전','4시간 전','3시간 전'],
+                    
+                                datasets: [
+                                    {label: "temperature 기온 (단위: °C)",
+                                    borderColor : "#7DEEBC",                      
+                                    data: [tempdata[6], tempdata[5] ,tempdata[4] ,tempdata[3] ,tempdata[2] ,tempdata[1] ,tempdata[0] ],
+                                    backgroundColor: "#D2FFD2"}
+                                ]
+                            },
+
+                            options: {
+                                scales: {
+				                    yAxes: [{
+					                    ticks: {
+						                    min: -30,
+						                    max: 40,
+					                    }
+				                    }]
+			                    }
+	           	            }
+                        });
+            
+                        //humidity-graph 
+                        new Chart(document.getElementById("humidity-graph"), {
+                            type: 'line',
+                            data: {
+                                labels: [ '9시간 전','8시간 전','7시간 전','6시간 전','5시간 전','4시간 전','3시간 전'],
+                    
+                                datasets: [
+                                    {label: "Humidity 습도 (단위: %)",
+                                    borderColor : "#28B4B4",                      
+                                    data: [humidata[6],humidata[5],humidata[4],humidata[3],humidata[2],humidata[1],humidata[0]],
+                                    backgroundColor: "#98EBDC"}
+                                ]
+                            },
+
+                            options: {
+                                scales: {
+				                    yAxes: [{
+					                    ticks: {
+						                    min: 0,
+						                    max: 100,
+					                    }
+				                    }]
+			                    }
+	           	            }
+                        });
+
+                        //wind-graph
+                        new Chart(document.getElementById("wind-graph"), {
+                            type: 'line',
+                            data: {
+                                labels:  [ '9시간 전','8시간 전','7시간 전','6시간 전','5시간 전','4시간 전','3시간 전'],
+                    
+                                datasets: [
+                                    {label: "wind velocity 풍속 (단위: m/s)",
+                                    borderColor : "#82B3ED",                      
+                                    data: [winddata[6],winddata[5],winddata[4],winddata[3],winddata[2],winddata[1],winddata[0]],
+                                    backgroundColor: "#E0EBFF"}
+                                ]
+                            },
+
+                            options: {
+                                scales: {
+				                yAxes: [{
+					                    ticks: {
+						                    min: 0,
+						                    max: 20,
+					                    }
+				                    }]
+			                    }
+	           	            }
+                         });        })
+
+                            })
+                            }
+                        }
             </script>
 
+
+            <!--그래프를 그리기 위해서 chart.js를 불러옴-->
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
 
                  
         </main>
