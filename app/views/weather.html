@@ -179,9 +179,130 @@
                 //사용자가 입력한 휴게소 이름의 값을 name 변수에 할당    
                 name = document.getElementById('name').value 
                 //bar부분에 휴게소 이름 출력
-                document.querySelector('reststop_name').innerHTML = name;}
+                document.querySelector('reststop_name').innerHTML = name;
 
+                
+
+                // < 맨 위 바에 조회 가능한 데이터 중 가장 최근의 날씨 정보 띄우기>
+
+                //오픈 api에서 받아올 수 있는 데이터가 상당히 띄엄띄엄한 관계로 종종 정보가 없는 시간대도 존재하므로 만약의 경우를 대비하여
+                //현재 시간으로부터 5시간 전 ~ 2시간 전의 정보중 가장 최근의 정보를 얻을 수 있도록 작성함.
+
+                var nnamedata = new Array(10);
+                var ttempdata = new Array(10);
+                var hhumidata = new Array(10);
+                var wwinddata = new Array(10);
+
+                for(let k=5; k>1; k--){
+                   //present_time-k가 음수인 경우 방지
+                    if(present_time-k <0){
+                        time1 = present_time-k+24;
+                        date1 = yesterday_YYYYMMDD
+                    }
+                    else{
+                        time1 = present_time-k
+                        date1 = YYYYMMDD
+                    }
+
+                //fetch
+                fetch('http://data.ex.co.kr/openapi/restinfo/restWeatherList?key=6806352377&type=json&sdate='+ date1 +'&stdHour=' + ('0'+ String(time1)).slice(-2)).then(function(response){
+                //testing
+                //fetch('http://data.ex.co.kr/openapi/restinfo/restWeatherList?key=test&type=json&sdate='+ "20220316" +'&stdHour='+ ('0'+ String(16)).slice(-2)).then(function(response){
+                    method: 'GET';
+                    body: JSON.stringify(this.obj)
+                    response.text().then(function(text){
+                   
+                    //불필요한 데이터들을 정리하고 split을 이용하여 text data를 array data로 변환
+                    //{}로 구성된 한 세트의 데이터가 어레이의 원소 하나가 되도록 split을 사용
+                    index1=text.indexOf('[')
+                    index2=text.indexOf(']')
+                    ndata=text.substr(index1+1, index2-index1+1)
+                    nndata=ndata.split('},');
+
+               
+                        //ReststopName (휴게소 이름) 데이터 추출  
+                        for(let i=0; i<nndata.length; i++){
+                            index3=nndata[i].indexOf('"unitName":"')
+                            index4=nndata[i].indexOf('"unitCode":"')
+                            ReststopName=nndata[i].substr(index3+12, index4-index3-14)
+                          
+                            //데이터에서 추출한 휴게소 이름 ReststopName이 검색창을 통해서 사용자에게 입력받은 이름 name과 일치하는 경우
+                            //그 데이터 셋에서 weather, temperature, humidity, wind를 추출하도록 함.
+                            if(ReststopName == name){
+                                //Weather  
+                                index5=nndata[i].indexOf('"weatherContents":"')
+                                index6=nndata[i].indexOf('"statusNo":"')
+                                bar_weather=nndata[i].substr(index5+19, index6-index5-21)
+                            
+                                //temperature
+                                index7=nndata[i].indexOf('"tempValue":"')
+                                index8=nndata[i].indexOf('"dewValue":"')
+                                bar_temperature=nndata[i].substr(index7+13, index8-index7-20)
+            
+                                //humidity
+                                index9=nndata[i].indexOf('"humidityValue":"')
+                                index10=nndata[i].indexOf('"windContents":"')
+                                bar_humidity=nndata[i].substr(index9+17, index10-index9-26)
+                  
+                                //wind
+                                index11=nndata[i].indexOf('"windValue":"')
+                                bar_wind=nndata[i].substr(index11+13,3)
+
+                                //어레이 nnamedata, ttempdata, hhumidata, wwinddata에 각각 bar_weather, bar_temperature, bar_humidity, bar_wind 데이터 할당
+                                nnamedata[k]=bar_weather;
+                                ttempdata[k]=bar_temperature;
+                                hhumidata[k]=bar_humidity;
+                                wwinddata[k]=bar_wind;
+                          }     
+                        }   
+                            //innerhtml을 이용해서 html화면에 데이터 표기
+                            //5시간 전, 4시간 전, 3시간 전, 2시간 전의 데이터 중 가장 최근의 데이터를 출력하도록 함
+                            for(let o=5; o>1; o-- ){
+                                if(nnamedata[2] !='undefined'){
+                                    document.querySelector('bar_Weather').innerHTML = ("\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0"+String(nnamedata[2])).slice(-12);
+                                    document.querySelector('bar_temperature').innerHTML = ("\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0"+String(ttempdata[2])).slice(-14)+'°C';
+                                    document.querySelector('bar_humidity').innerHTML = ("\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0"+String(hhumidata[2])).slice(-12)+'%'
+                                    document.querySelector('bar_wind').innerHTML = ("\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0"+String(wwinddata[2])).slice(-12)+ 'm/s';
+                                    document.querySelector('empty').innerHTML = ("\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0");                                    
+                                }
+
+                                else{
+                                    if(nnamedata[3]!='undefined'){
+                                        document.querySelector('bar_Weather').innerHTML = ("\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0"+String(nnamedata[3])).slice(-12);
+                                        document.querySelector('bar_temperature').innerHTML = ("\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0"+String(ttempdata[3])).slice(-14)+'°C';
+                                        document.querySelector('bar_humidity').innerHTML = ("\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0"+String(hhumidata[3])).slice(-12)+'%'
+                                        document.querySelector('bar_wind').innerHTML = ("\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0"+String(wwinddata[3])).slice(-12)+ 'm/s';
+                                        document.querySelector('empty').innerHTML = ("\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0");       
+                                    }
+                                    else{
+                                        if(nnamedata[4]!='undefined'){
+                                            document.querySelector('bar_Weather').innerHTML = ("\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0"+String(nnamedata[4])).slice(-12);
+                                            document.querySelector('bar_temperature').innerHTML = ("\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0"+String(ttempdata[4])).slice(-14)+'°C';
+                                            document.querySelector('bar_humidity').innerHTML = ("\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0"+String(hhumidata[4])).slice(-12)+'%'
+                                            document.querySelector('bar_wind').innerHTML = ("\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0"+String(wwinddata[4])).slice(-12)+ 'm/s';
+                                            document.querySelector('empty').innerHTML = ("\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0")
+                                        }
+                                        else{
+                                            if(nnamedata[5]!='undefined'){
+                                            document.querySelector('bar_Weather').innerHTML = ("\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0"+String(nnamedata[5])).slice(-12);
+                                            document.querySelector('bar_temperature').innerHTML = ("\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0"+String(ttempdata[5])).slice(-14)+'°C';
+                                            document.querySelector('bar_humidity').innerHTML = ("\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0"+String(hhumidata[5])).slice(-12)+'%'
+                                            document.querySelector('bar_wind').innerHTML = ("\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0"+String(wwinddata[5])).slice(-12)+ 'm/s';
+                                            document.querySelector('empty').innerHTML = ("\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0")
+                                        }
+
+                                        }
+                                    }
+                                }
+
+                            }
+                    })                           
+                  })  
+                }
+            }
+   
             </script>
+
 
                  
         </main>
