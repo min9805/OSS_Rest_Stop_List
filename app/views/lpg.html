@@ -13,6 +13,7 @@
         <!-- Core theme CSS (includes Bootstrap)-->
         <link href="css/styles.css" rel="stylesheet" />
     </head>
+
     <body class="d-flex flex-column">
         <main class="flex-shrink-0">
             <!-- Navigation-->
@@ -45,84 +46,66 @@
                     </div>
                 </div>
             </nav>
+
             <!-- Header-->
             <header class="py-5">
                 <div class="container px-5">
                     <div class="row justify-content-center">
                         <div class="col-lg-8 col-xxl-6">
                             <div class="text-center my-5">
-                                <h1 class="fw-bolder mb-3">Our mission is to make building websites easier for everyone.</h1>
-                                <p class="lead fw-normal text-muted mb-4">Start Bootstrap was built on the idea that quality, functional website templates and themes should be available to everyone. Use our open source, free products, or support us by purchasing one of our premium products or services.</p>
-                                <a class="btn btn-primary btn-lg" href="#scroll-target">Read our story</a>
+                                <h1 class="fw-bolder mb-3">LPG 충전소</h1>
+                                <p class="lead fw-normal text-muted mb-4">Just search the name of the rest stop,<br>You'll find out the LPG filling station of the rest area.</p>
+                               
+                                <!--검색 버튼으로 검색할 휴게소 이름 입력 받기-->
+                                <p><input type="text" placeholder="휴게소 이름" id="name"><input type="button"  onclick="ShowLPG()" value="확인"></p>
+
                             </div>
                         </div>
                     </div>
                 </div>
             </header>
-            <!-- About section one-->
-            <section class="py-5 bg-light" id="scroll-target">
-                <div class="container px-5 my-5">
-                    <div class="row gx-5 align-items-center">
-                        <div class="col-lg-6"><img class="img-fluid rounded mb-5 mb-lg-0" src="https://dummyimage.com/600x400/343a40/6c757d" alt="..." /></div>
-                        <div class="col-lg-6">
-                            <h2 class="fw-bolder">Our founding</h2>
-                            <p class="lead fw-normal text-muted mb-0">Lorem ipsum dolor sit amet consectetur adipisicing elit. Iusto est, ut esse a labore aliquam beatae expedita. Blanditiis impedit numquam libero molestiae et fugit cupiditate, quibusdam expedita, maiores eaque quisquam.</p>
-                        </div>
-                    </div>
-                </div>
-            </section>
-            <!-- About section two-->
-            <section class="py-5">
-                <div class="container px-5 my-5">
-                    <div class="row gx-5 align-items-center">
-                        <div class="col-lg-6 order-first order-lg-last"><img class="img-fluid rounded mb-5 mb-lg-0" src="https://dummyimage.com/600x400/343a40/6c757d" alt="..." /></div>
-                        <div class="col-lg-6">
-                            <h2 class="fw-bolder">Growth &amp; beyond</h2>
-                            <p class="lead fw-normal text-muted mb-0">Lorem ipsum dolor sit amet consectetur adipisicing elit. Iusto est, ut esse a labore aliquam beatae expedita. Blanditiis impedit numquam libero molestiae et fugit cupiditate, quibusdam expedita, maiores eaque quisquam.</p>
-                        </div>
-                    </div>
-                </div>
-            </section>
-            <!-- Team members section-->
-            <section class="py-5 bg-light">
-                <div class="container px-5 my-5">
+
+            
+            <!--bar-->  
+            <section class="py-3 bg-light" id="scroll-target">
+                <div class="container px-1 my-1">
                     <div class="text-center">
-                        <h2 class="fw-bolder">Our team</h2>
-                        <p class="lead fw-normal text-muted mb-5">Dedicated to quality and your success</p>
+                        <center><p><h3 class="fw-bolder"><reststop_name></reststop_name></h3></p></center>
+                        <center><hr style ="height:2px; width: 55%"></hr></center>
+                        <center><p><h5 class="fw-bolder"><bar1></bar1></h5></p></center>
+                        <div class="container px-1 my-1"><h6 class="lead fw-normal text-muted mb-4"><bar_1></bar_1></h6><div>
+                        <center><hr style ="height:2px; width: 15%"></hr></center>
+                        <center><p><h5 class="fw-bolder"><bar2></bar2></h5></p></center>
+                        <div class="container px-1 my-1"><h6 class="lead fw-normal text-muted mb-4"><bar_2></bar_2></h6><div>
                     </div>
-                    <div class="row gx-5 row-cols-1 row-cols-sm-2 row-cols-xl-4 justify-content-center">
-                        <div class="col mb-5 mb-5 mb-xl-0">
-                            <div class="text-center">
-                                <img class="img-fluid rounded-circle mb-4 px-4" src="https://dummyimage.com/150x150/ced4da/6c757d" alt="..." />
-                                <h5 class="fw-bolder">Ibbie Eckart</h5>
-                                <div class="fst-italic text-muted">Founder &amp; CEO</div>
-                            </div>
-                        </div>
-                        <div class="col mb-5 mb-5 mb-xl-0">
-                            <div class="text-center">
-                                <img class="img-fluid rounded-circle mb-4 px-4" src="https://dummyimage.com/150x150/ced4da/6c757d" alt="..." />
-                                <h5 class="fw-bolder">Arden Vasek</h5>
-                                <div class="fst-italic text-muted">CFO</div>
-                            </div>
-                        </div>
-                        <div class="col mb-5 mb-5 mb-sm-0">
-                            <div class="text-center">
-                                <img class="img-fluid rounded-circle mb-4 px-4" src="https://dummyimage.com/150x150/ced4da/6c757d" alt="..." />
-                                <h5 class="fw-bolder">Toribio Nerthus</h5>
-                                <div class="fst-italic text-muted">Operations Manager</div>
-                            </div>
-                        </div>
-                        <div class="col mb-5">
-                            <div class="text-center">
-                                <img class="img-fluid rounded-circle mb-4 px-4" src="https://dummyimage.com/150x150/ced4da/6c757d" alt="..." />
-                                <h5 class="fw-bolder">Malvina Cilla</h5>
-                                <div class="fst-italic text-muted">CTO</div>
-                            </div>
-                        </div>
                     </div>
-                </div>
-            </section>
-        </main>
+            </section>  
+
+
+
+            <script>
+
+                //LPG 휴게소 open api는 LPG휴게소가 존재하는 데이터 리스트만 가지고 있음
+                //따라서 fetch를 총 두 번 진행하여 첫번째에서는 LPG 휴게소 리스트를 받아와 그 중 휴게소 이름만 추출하여 리스트로 만들고
+                //웹 페이지에서 검색하고자 하는 휴게소 이름을 입력받아 만약 이름이 LPG휴게소 리스트에 있다면 
+                //'LPG 충전소가 있습니다'를, 없다면 'LPG 충전소가 없습니다'를 출력하도록 함
+
+            
+                //fetch로 전체 데이터 리스트를 text형태로 끌어오기
+                function ShowLPG() {
+
+                //사용자가 입력한 휴게소 이름의 값을 name 변수에 할당    
+                name = document.getElementById('name').value 
+
+                //bar부분에 휴게소 이름 출력
+                document.querySelector('reststop_name').innerHTML = name;
+
+                document.querySelector('bar1').innerHTML = 'LPG 충전소 여부';
+                document.querySelector('bar2').innerHTML = '브랜드';
+                }
+              </script>
+
+
         <!-- Footer-->
         <footer class="bg-dark py-4 mt-auto">
             <div class="container px-5">
