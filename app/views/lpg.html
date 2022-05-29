@@ -102,6 +102,70 @@
 
                 document.querySelector('bar1').innerHTML = 'LPG 충전소 여부';
                 document.querySelector('bar2').innerHTML = '브랜드';
+
+                var LPG_Reststop_List = [];  
+                fetch('http://data.ex.co.kr/openapi/business/lpgServiceAreaInfo?key=6806352377&type=json&numOfRows=1000').then(function (response) {
+                    method: 'GET';
+                    body: JSON.stringify(this.obj)
+                    response.text().then(function (text) {
+            
+                    //쓸데없는 데이터를 제거하여 필요한 데이터만 정리하기
+                    index_1 = text.indexOf('[')
+                    index_2 = text.indexOf(']')
+                    mdata = text.substr(index_1 + 1, index_2 - index_1 - 1)
+            
+                    //text data -> array data
+                    // },를 기준으로 하여 split으로 각 데이터셋 {}이 array의 원소가 되도록 array를 생성하기
+                    mmdata = mdata.split('},');
+            
+                    //휴게소 이름들만 데이터리스트에서 추출해 LPG_Reststop_List 어레이에 넣기 
+                
+                    //mmdata의 길이만큼 반복
+                    for(let i=0; i<mmdata.length; i++){
+                      
+                      //휴게소 이름만 데이터리스트에서 추출하기
+                      index_3 = mmdata[i].indexOf('"serviceAreaName":"')
+                      index_4 = mmdata[i].indexOf(',"routeCode":"') 
+                      ReststopName = mmdata[i].substr(index_3+19, index_4-index_3-20)
+                      
+                      //휴게소 이름을 어레이에 추가
+                      LPG_Reststop_List.push(ReststopName)}
+            
+                    Exist='LPG 충전소가 없습니다'
+                    for(let j=0; j<LPG_Reststop_List.length; j++){
+                        if(name==LPG_Reststop_List[j]){
+                            Exist = 'LPG 충전소가 있습니다'
+                    }}
+                    document.querySelector('bar_1').innerHTML =String(Exist)
+                    
+                })
+                  })
+                
+                    //두번째 fetch에서는 name에 해당하는 주유소 브랜드 이름만 끌어오기
+                    fetch('http://data.ex.co.kr/openapi/business/lpgServiceAreaInfo?key=6806352377&type=json&serviceAreaName=' +  name  + '&numOfRows=1000').then(function (response) {
+                      method: 'GET';
+                      body: JSON.stringify(this.obj)
+                      response.text().then(function (text) {
+            
+                      //text data->array data로 변환
+                      //데이터를 깔끔하게 정리
+                      index1 = text.indexOf('[')
+                      index2 = text.indexOf(']')
+                      ndata = text.substr(index1 + 1, index2 - index1 - 1)
+                      nndata = ndata.split('},');
+            
+                      //Lpg 충전소 브랜드 이름
+                      for (let k = 0; k < nndata.length; k++) {
+                        index3 = nndata[k].indexOf('"oilCompany":"')
+                        nnndata = nndata[k].substr(index3)
+                        index4 = nnndata.indexOf(',')
+                        Lpgname = nnndata.substr(14, index4-15)
+                        
+                        //HTML화면에 띄우기
+                        document.querySelector('bar_2').innerHTML = String(Lpgname)
+                      }
+                  })
+                  })    
                 }
               </script>
 
