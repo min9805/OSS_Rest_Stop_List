@@ -63,7 +63,7 @@ app.use(ExpressSession({
 //모든 router 처리가 끝난 후 404 오류 페이지 처리
 var errorHandler = expressErrorHandler({
     static: {
-        '404': './rest_stop_list/app/public/404.html'
+        '404': './app/public/404.html'
     }
 });
 app.use(expressErrorHandler.httpError(404));
