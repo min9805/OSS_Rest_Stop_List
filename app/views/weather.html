@@ -1,3 +1,6 @@
+<!-- 
+    휴게소 표준정보의 service area code 의 우측끝 3자리 == 휴게소 날씨 표준정보의 unitCode
+-->
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -11,7 +14,7 @@
         <!-- Bootstrap icons-->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
         <!-- Core theme CSS (includes Bootstrap)-->
-        <link href="css/styles.css" rel="stylesheet" />
+        <link href="css/styles.css" rel="stylesheet" /> 
     </head>
 
 
@@ -56,11 +59,26 @@
                             <div class="text-center my-5">
                                 <h1 class="fw-bolder mb-3">휴게소 날씨</h1>
                                 <p class="lead fw-normal text-muted mb-4">Just search the name of the rest stop,<br>You'll find out the weather of the rest area.</p>
-                               
-                                <!--검색 버튼으로 검색할 휴게소 이름 입력 받기-->
-                                <p><input type="text" placeholder="휴게소 이름" id="name"><input type="button"  onclick="Showweather()" value="확인"></p>
-
+                                <div class="dropdown">
+                                
+                                    <button class ="btn btn-primary dropdown-toggle " id="highway" data-bs-toggle="dropdown">
+                                        고속도로 선택
+                                    </button>
+                                    <div class ="dropdown-menu">
+                                        <a class="dropdown-item" onclick="addReststop('0010')">경부선</a>
+                                        <a class="dropdown-item" onclick="addReststop('0550')">중앙선</a>
+                                        <a class="dropdown-item" onclick="addReststop('0500')">영동선</a>
+                                    </div>
+                                    <button class ="btn btn-primary dropdown-toggle " id = "rest_stop" data-bs-toggle="dropdown">
+                                        휴게소 선택
+                                    </button>
+                                    <div class ="dropdown-menu" id = "select_restStop">
+                                    </div>
+                                </div>
                             </div>
+                            
+                            
+                            
                         </div>
                     </div>
                 </div>
@@ -124,8 +142,9 @@
                 </div>
             </section>   
             
-
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
             <script>  
+            
                 //날씨 오픈 api는 조회 방식이나 끌어오는 데이터가 복잡해서 주석을 자세히 작성함
 
                 //* 휴게소 날씨 오픈 api 주의 사항 ()
@@ -141,7 +160,7 @@
                 let present_date = present.getDate();  
                 let present_time = ('0'+(present.getHours())).slice(-2); 
 
-                //현재 년도, 월, 날짜를 YYYYMMDD형태로 변형
+                //현재 년도, 월, 날짜를 YYYYMMDD형태로 변형 
                 //날씨 오픈 api의 연일월 입력타입이 YYYYMMDD
                 let YYYYMMDD = String(present_year)+String(present_month)+String(present_date);  
 
@@ -155,11 +174,152 @@
                 
                 console.log(yesterday_YYYYMMDD)
                 console.log(YYYYMMDD)
+
+
                 
+                // 모든 자식요소들을 삭제하는 함수
+                function removeAllchild(div) {
+                    while (div.hasChildNodes()) {
+                        div.removeChild(div.firstChild);
+                    }
+                }
 
-                //검색창에 휴게소 이름을 입력하면 실행되는 함수 Showweather()
-                function Showweather() {
+                var serviceAreaCode= "";
 
+
+                // 각 고속도로에 존재하는 휴게소 리스트를 작성하여 드랍다운 메뉴에 추가합니다.
+                function addReststop(lineNumber){
+
+                    // 아래 조건문은 각 고속도로 선택시 해당 고속도로 이름이 버튼(html)에 기록되도록 하기 위함입니다.
+                    let highway_Area = document.getElementById('highway');
+                    if(lineNumber==='0010'){
+                        highway_Area.innerHTML = '경부선';
+                    }
+                    else if(lineNumber==='0550'){
+                        highway_Area.innerHTML = '중앙선';
+                    }
+                    else if(lineNumber==='0500'){
+                        highway_Area.innerHTML = '영동선';
+                    }
+                    let tagArea = document.getElementById('select_restStop'); // 드랍다운 메뉴 추가할 태그 아이디 저장
+                    removeAllchild(tagArea);    // 고속도로 선택시마다 새로운 휴게소를 불러와야 하므로 현재 드랍다운 메뉴에 존재하는 자식요소 싹다 삭제합니다.
+                    
+                    
+
+
+                    // 아래의 ajax 문을 통해서 휴게소표준 api를 불러옵니다. 각 고속도로에 대한 모든 휴게소이름과 휴게소 코드를 가져오기 위함입니다.
+                    // 여기서 가져오게되는 휴게소 코드(serviceAreaCode)는 추후에 휴게소별 날씨정보 api에 있는 unitCode와 상응하는 데이터입니다.
+                    var routeCodes = [];
+                    var svarAddrs = [];
+                    var rest_names = [];
+                    var serviceAreaCodes = [];
+                    // 페이지 1
+                    $.ajax({
+                        url: "http://data.ex.co.kr/openapi/business/conveniServiceArea?key=1817997939&type=json&numOfRows=99&pageNo=1",
+                        async:false,
+                        success: function(data){
+                            //변수 설정
+                            userData = data;
+                        },
+                    }).done(function() {
+                        var routeCode = ""; 
+                        var svarAddr = "";
+                        var rest_name = "";
+                        var data_count = userData["list"].length    // 데이터 개수 얻기
+                        
+                        for (var i =0; i<data_count; i++){
+                            routeCode = JSON.stringify(userData["list"][i]["routeCode"]);   // 고속도로 번호를 가져옵니다.
+                            rest_name = JSON.stringify(userData["list"][i]["serviceAreaName"]); // 휴게소 이름을 가져옵니다.
+                            serviceCode = JSON.stringify(userData["list"][i]["serviceAreaCode"]); // 휴게소코드를 가져옵니다.
+                            
+                            if(routeCode.substring(1,5) === lineNumber){    //  고속도로 코드가 같다면
+                                rest_names.push(rest_name); //휴게소 이름을 저장해둡니다...
+                                serviceAreaCodes.push(serviceCode); //  휴게소 코드를 저장해둡니다.
+                            }
+                        }
+                        // 아래 forEach문은 저장한 모든 휴게소에 대해, 드랍다운 버튼을 생성하기 위함입니다.
+                        rest_names.forEach(function(addr,index){
+                            let new_A_Button = document.createElement('a');   // a 속성 생성
+                            new_A_Button.setAttribute('class','dropdown-item');
+                            new_A_Button.setAttribute('onclick',"Showweather("+serviceAreaCodes[index]+","+rest_names[index]+")");
+                            new_A_Button.innerHTML = rest_names[index].substring(1,rest_names[index].length-1);
+                            tagArea.appendChild(new_A_Button);
+                        })
+                    })
+
+                    // 페이지 2, 페이지 1과 모든 과정이 동일하며, 오픈 api 데이터 가져오는 특성상 페이지를 나누었습니다.
+                    $.ajax({
+                        url: "http://data.ex.co.kr/openapi/business/conveniServiceArea?key=1817997939&type=json&numOfRows=99&pageNo=2",
+                        async:false,
+                        success: function(data){
+                            //변수 설정
+                            userData = data;
+                        },
+                    }).done(function() {
+                        var routeCode = ""; 
+                        var svarAddr = "";
+                        var rest_name = "";
+                        var data_count = userData["list"].length    // 데이터 개수 얻기
+                        
+                        for (var i =0; i<data_count; i++){
+                            routeCode = JSON.stringify(userData["list"][i]["routeCode"]);
+                            rest_name = JSON.stringify(userData["list"][i]["serviceAreaName"]); // 휴게소 이름...
+                            serviceCode = JSON.stringify(userData["list"][i]["serviceAreaCode"]);
+                            
+                            if(routeCode.substring(1,5) === lineNumber){    //  고속도로 코드가 같다면
+                                rest_names.push(rest_name); //휴게소 이름...
+                                serviceAreaCodes.push(serviceCode);
+                            }
+                        }
+                        rest_names.forEach(function(addr,index){
+                            let new_A_Button = document.createElement('a');   // a 속성 생성
+                            new_A_Button.setAttribute('class','dropdown-item');
+                            new_A_Button.setAttribute('onclick',"Showweather("+serviceAreaCodes[index]+","+rest_names[index]+")");
+                            new_A_Button.innerHTML = rest_names[index].substring(1,rest_names[index].length-1);
+                            tagArea.appendChild(new_A_Button);
+                        })
+                    })
+                    // 페이지 3
+                    $.ajax({
+                        url: "http://data.ex.co.kr/openapi/business/conveniServiceArea?key=1817997939&type=json&numOfRows=99&pageNo=3",
+                        async:false,
+                        success: function(data){
+                            //변수 설정
+                            userData = data;
+                        },
+                    }).done(function() {
+                        var routeCode = ""; 
+                        var svarAddr = "";
+                        var rest_name = "";
+                        var data_count = userData["list"].length    // 데이터 개수 얻기
+                        
+                        for (var i =0; i<data_count; i++){
+                            routeCode = JSON.stringify(userData["list"][i]["routeCode"]);
+                            rest_name = JSON.stringify(userData["list"][i]["serviceAreaName"]); // 휴게소 이름...
+                            serviceCode = JSON.stringify(userData["list"][i]["serviceAreaCode"]);
+                            
+                            if(routeCode.substring(1,5) === lineNumber){    //  고속도로 코드가 같다면
+                                rest_names.push(rest_name); //휴게소 이름...
+                                serviceAreaCodes.push(serviceCode);
+                            }
+                        }
+                        rest_names.forEach(function(addr,index){
+                            let new_A_Button = document.createElement('a');   // a 속성 생성
+                            new_A_Button.setAttribute('class','dropdown-item');
+                            new_A_Button.setAttribute('onclick',"Showweather("+serviceAreaCodes[index]+","+rest_names[index]+")");
+                            new_A_Button.innerHTML = rest_names[index].substring(1,rest_names[index].length-1);
+                            tagArea.appendChild(new_A_Button);
+                        })
+                    })
+
+                }
+
+                //검색창에 휴게소 이름을 입력하면 실행되는 함수 Showweather() serviceCode = 휴게소 코드, rest_name = 휴게소 이름
+                function Showweather(serviceCode,rest_name) {
+                
+                serviceCode = serviceCode.substring(3,serviceCode.length);  //가져온 휴게소코드를 여기서 사용하는 휴게소코드인 unitCode와 동일한포맷으로 바꿉니다.
+                let rest_stop = document.getElementById('rest_stop');   // 해당 줄과 바로 아랫줄은 드랍다운 버튼선택시 해당 휴게소이름을 html에 적용하기 위함입니다.
+                rest_stop.innerHTML =rest_name;
                 //휴게소 이름을 검색하기 전까지는 기타 html 구성 요소들은 숨기기 위하여 innerHTML사용
                 //휴게소 이름 검색시 화면에 표시
                 //bar
@@ -177,9 +337,9 @@
                 document.querySelector('exp6').innerHTML = '지금으로부터 9시간 전부터 3시간 전까지의 풍속을 조회합니다. ';
 
                 //사용자가 입력한 휴게소 이름의 값을 name 변수에 할당    
-                name = document.getElementById('name').value 
+                name = rest_name
                 //bar부분에 휴게소 이름 출력
-                document.querySelector('reststop_name').innerHTML = name;
+                document.querySelector('reststop_name').innerHTML = rest_name;
 
                 
 
@@ -192,7 +352,7 @@
                 var ttempdata = new Array(10);
                 var hhumidata = new Array(10);
                 var wwinddata = new Array(10);
-
+                
                 for(let k=5; k>1; k--){
                    //present_time-k가 음수인 경우 방지
                     if(present_time-k <0){
@@ -218,17 +378,25 @@
                     index2=text.indexOf(']')
                     ndata=text.substr(index1+1, index2-index1+1)
                     nndata=ndata.split('},');
-
+                    
                
                         //ReststopName (휴게소 이름) 데이터 추출  
                         for(let i=0; i<nndata.length; i++){
+                            // 아래 두줄의 코드를 통해서 휴게소코드를 가져옵니다.
+                            let index1forUnitCode = nndata[i].indexOf('"unitCode":"');
+                            unitCode = nndata[i].substr(index1forUnitCode+12,3);
+
                             index3=nndata[i].indexOf('"unitName":"')
                             index4=nndata[i].indexOf('"unitCode":"')
                             ReststopName=nndata[i].substr(index3+12, index4-index3-14)
                           
                             //데이터에서 추출한 휴게소 이름 ReststopName이 검색창을 통해서 사용자에게 입력받은 이름 name과 일치하는 경우
                             //그 데이터 셋에서 weather, temperature, humidity, wind를 추출하도록 함.
-                            if(ReststopName == name){
+                            
+                            // 해당 함수의 매개변수로 가져온 휴게소 코드와, 함수 안에서 fetch를 통해 가져온 오픈 api의 휴게소코드가 동일한지 비교합니다.
+                            if(serviceCode == unitCode){
+                                console.log("unitCode access");
+                                
                                 //Weather  
                                 index5=nndata[i].indexOf('"weatherContents":"')
                                 index6=nndata[i].indexOf('"statusNo":"')
@@ -253,8 +421,9 @@
                                 ttempdata[k]=bar_temperature;
                                 hhumidata[k]=bar_humidity;
                                 wwinddata[k]=bar_wind;
-                          }     
-                        }   
+                          } 
+                        }  
+                        
                             //innerhtml을 이용해서 html화면에 데이터 표기
                             //5시간 전, 4시간 전, 3시간 전, 2시간 전의 데이터 중 가장 최근의 데이터를 출력하도록 함
                             for(let o=5; o>1; o-- ){
@@ -299,7 +468,7 @@
                     })                           
                   })  
                 }
-
+                
 
                 //그래프 그리기
                 //온도, 습도, 풍속 데이터를 array에 저장하여 그래프에 넘겨줌
@@ -307,7 +476,7 @@
                 var humidata = new Array(10);
                 var winddata = new Array(10);
 
-                name = document.getElementById('name').value
+                name = rest_name
 
                 for(let j=0; j<7; j++){
                     //present_time-3-j가 음수인 경우 방지
@@ -321,7 +490,7 @@
                         date2 = YYYYMMDD
                     }
 
-                name = document.getElementById('name').value
+                name = rest_name
                 fetch('http://data.ex.co.kr/openapi/restinfo/restWeatherList?key=6806352377&type=json&sdate='+ date2 +'&stdHour=' + ('0'+String(time2)).slice(-2)).then(function(response){
                 //testing
                // fetch('http://data.ex.co.kr/openapi/restinfo/restWeatherList?key=test&type=json&sdate='+ "20220524" +'&stdHour='+ ('0'+ String(22-j)).slice(-2)).then(function(response){
@@ -337,12 +506,15 @@
                
                          //ReststopName (휴게소 이름)  
                          for(let i=0; i<nndata.length; i++){
+                        let index1forUnitCode = nndata[i].indexOf('"unitCode":"');
+                        unitCode = nndata[i].substr(index1forUnitCode+12,3);
+
                          index3=nndata[i].indexOf('"unitName":"')
                          index4=nndata[i].indexOf('"unitCode":"')
                          ReststopName=nndata[i].substr(index3+12, index4-index3-14)
 
                          
-                          if(ReststopName == name){
+                          if(serviceCode == unitCode){
                           //Weather  
                           index5=nndata[i].indexOf('"weatherContents":"')
                           index6=nndata[i].indexOf('"statusNo":"')
