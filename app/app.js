@@ -12,6 +12,9 @@ var lpgRouter = require('./routes/lpg')
 var weatherRouter = require('./routes/weather')
 var menuRouter = require('./routes/menu')
 var csvRouter = require('./routes/csv')
+var postRouter = require('./routes/post')
+var postaddRouter = require('./routes/postadd')
+
 var app = express();
 var router = express.Router();
 
@@ -49,6 +52,8 @@ app.use('/login',loginRouter);  // login page route
 app.use('/weather',weatherRouter)
 app.use('/lpg',lpgRouter)
 app.use('/signup',signupRouter); // sign up page route
+app.use('/post',postRouter);
+app.use('/postadd',postaddRouter);
 app.use('/', indexRouter);  // main page route
 
 

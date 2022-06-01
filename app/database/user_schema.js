@@ -10,7 +10,7 @@ Schema.createSchema = function(mongoose) {
 	    hashed_password: {type: String, required: true, 'default':''},
 	    salt: {type:String, required:true},
 	    name: {type: String, index: 'hashed', 'default':''},
-	    age: {type: Number, 'default': -1},
+	    email: {type: Number, 'default': ''},
 	    created_at: {type: Date, index: {unique: false}, 'default': Date.now},
 	    updated_at: {type: Date, index: {unique: false}, 'default': Date.now}
 	});
@@ -91,8 +91,6 @@ Schema.createSchema = function(mongoose) {
 		return this.find({}, callback);
 	});
 	
-	console.log('UserSchema 정의함.');
-
 	return UserSchema;
 };
 
