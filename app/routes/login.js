@@ -10,7 +10,6 @@ router.get('/',function(req,res){
 });
 
 router.post('/process', function(req, res) {
-    console.log('/login/process 처리함');
 
     var paramId = req.body.id || req.query.id;
     var paramPassword = req.body.password || req.query.password;
@@ -39,21 +38,12 @@ router.post('/process', function(req, res) {
 				console.dir(docs);
 
                 // 조회 결과에서 사용자 이름 확인
-				var username = docs[0].name;
-				
-				res.writeHead('200', {'Content-Type':'text/html;charset=utf8'});
-				res.write('<h1>로그인 성공</h1>');
-				res.write('<div><p>사용자 아이디 : ' + paramId + '</p></div>');
-				res.write('<div><p>사용자 이름 : ' + username + '</p></div>');
-				res.write("<br><br><a href='/login'>다시 로그인하기</a>");
-				res.end();
+				res.render('login.html')
+
 			
 			} else {  // 조회된 레코드가 없는 경우 실패 응답 전송
-				res.writeHead('200', {'Content-Type':'text/html;charset=utf8'});
-				res.write('<h1>로그인  실패</h1>');
-				res.write('<div><p>아이디와 패스워드를 다시 확인하십시오.</p></div>');
-				res.write("<br><br><a href='/login'>다시 로그인하기</a>");
-				res.end();
+				res.render('/')
+
 			}
 		});
 	} else {  // 데이터베이스 객체가 초기화되지 않은 경우 실패 응답 전송
@@ -67,8 +57,6 @@ router.post('/process', function(req, res) {
 
 //사용자를 인증하는 함수 : 아이디로 먼저 찾고 비밀번호를 그 다음에 비교하도록 함
 var authUser = function(database, id, password, callback) {
-	console.log('authUser 호출됨.');
-	
 	// 1. 아이디를 이용해 검색
 	database.UserModel.findById(id, function(err, results) {
 		if (err) {
@@ -80,7 +68,6 @@ var authUser = function(database, id, password, callback) {
 		console.dir(results);
 		
 		if (results.length > 0) {
-			console.log('아이디와 일치하는 사용자 찾음.');
 			
 			// 2. 패스워드 확인 : 모델 인스턴스를 객체를 만들고 authenticate() 메소드 호출
 			var user = new database.UserModel({id:id});
