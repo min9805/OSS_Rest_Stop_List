@@ -22,7 +22,6 @@ Schema.createSchema = function(mongoose) {
 	    this._password = password;
 	    this.salt = this.makeSalt();
 	    this.hashed_password = this.encryptPassword(password);
-	    console.log('virtual password 호출됨 : ' + this.hashed_password);
 	  })
 	  .get(function() { return this._password });
 	

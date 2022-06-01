@@ -14,6 +14,8 @@ var menuRouter = require('./routes/menu')
 var csvRouter = require('./routes/csv')
 var postRouter = require('./routes/post')
 var postaddRouter = require('./routes/postadd')
+var showpostRouter = require('./routes/showpost')
+
 
 var app = express();
 var router = express.Router();
@@ -54,6 +56,7 @@ app.use('/lpg',lpgRouter)
 app.use('/signup',signupRouter); // sign up page route
 app.use('/post',postRouter);
 app.use('/postadd',postaddRouter);
+app.use('/showpost',showpostRouter);
 app.use('/', indexRouter);  // main page route
 
 

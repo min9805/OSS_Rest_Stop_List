@@ -14,6 +14,15 @@
     <!-- Core theme CSS (includes Bootstrap)-->
     <link href="css/styles.css" rel="stylesheet" />
     <script src="http://code.jquery.com/jquery-2.1.4.js"></script>
+    <script>
+        $(document).ready(function() {
+            var output = $("#contentsOutput").text();
+            console.log('output : ' + output);
+            
+            $("#contentsOutput").html(output);
+             
+        });
+    </script>
 </head>
 
 <body class="d-flex flex-column h-100">
@@ -54,55 +63,44 @@
             </div>
         </nav>
         <!-- Page Content-->
-        <div class="container">
-            <br>
-
-            <div class="ui raised segment">
-                <a class="ui blue ribbon label">게시판</a>
-
-
-                <div class="ui blue fluid card">
-                    <div class="content">
-                        <table border="1" width="800" align="center">
-                            <tr align="center">
-                                <p>
-                                    <td colspan="3">게시판</td>
-                                </p>
-                            </tr>
-                            <tr align="center">
-                                <td>번호</td>
-                                <td>제목</td>
-                                <td>작성자</td>
-                                <td>작성일</td>
-                            </tr>
-                            <div class="ui very relaxed selection celled list">
-                                <% var noStart = posts.length; for(var i=0; i < posts.length; i++){ var curTitle=posts[i]._doc.title;
-                                    var curNo=noStart - i; var createdDate = posts[i]._doc.created_at; %>
-                                    <tr align="center">
-                                        <td>
-                                            <%= curNo %>
-                                        </td>
-                                        <td>
-                                            <div class="fourteen wide column" onclick="javascript:window.location='/showpost/<%=posts[i]._id %>'">
-                                            <%= curTitle %>
-                                        </td>
-                                        <td>admin</td>
-                                        <td><%=createdDate%></td>
-                                    </tr>
-                                    <% } %>
-                            </div>
-                        </table>
-
-
-
-
-                        <br><br>
-                        <a class="ui button" href='/postadd'>글쓰기</a>
-
+        <div class="ui raised segment">
+            <a class="ui blue ribbon label">게시판</a>
+              <span id="board_title"><%=title %></span>
+        
+            
+            <div class="ui blue fluid card">
+                 <div class="content">
+                    <% 
+                       var curTitle = posts._doc.title;
+                       var curContents = posts._doc.contents;
+                       var curWriter = "admin";
+                        
+                       var entities = new Entities();
+                       
+                       var decodedContents = entities.decode(curContents);
+                    %>
+                    
+                    <div id="titleOutput" class="header"><%=curTitle %></div>
+                       <div class="meta">
+                             <span class="right floated time">1일전</span>
+                             <span class="category">일반</span>
+                       </div>
+                       <div id="contentsOutput" class="description">
+                       <%=decodedContents %>
                     </div>
-                </div>
+                 </div>
+                  <div class="extra content">
+                    <div class="right floated author">
+                           <%=curWriter %>
+                    </div>
+                  </div>
+                
             </div>
+            
+            <br><br><a class="ui button" href='/post'>글 목록</a>
+            
         </div>
+
     </main>
     <!-- Footer-->
     <footer class="bg-dark py-4 mt-auto">

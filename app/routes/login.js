@@ -38,7 +38,7 @@ router.post('/process', function(req, res) {
 				console.dir(docs);
 
                 // 조회 결과에서 사용자 이름 확인
-				res.render('login.html')
+				res.render('/')
 
 			
 			} else {  // 조회된 레코드가 없는 경우 실패 응답 전송
