@@ -54,9 +54,24 @@
                             <div class="text-center my-5">
                                 <h1 class="fw-bolder mb-3">휴게소 메뉴 정보</h1>
                                 <p class="lead fw-normal text-muted mb-4">Just search the name of the rest stop,<br>You'll find out what kind of food there is at the rest area.</p>
-                                <p><h3>검색할 휴게소의 이름을 입력하세요</h3></p>
                                 
-                                <input type="text" placeholder="내용을 입력하세요" id="menuname"><input type="button"  onclick="Showmenu()" value="확인">
+                                <div class="dropdown">
+                                
+                                    <button class ="btn btn-primary dropdown-toggle " id="highway" data-bs-toggle="dropdown">
+                                        고속도로 선택
+                                    </button>
+                                    <div class ="dropdown-menu">
+                                        <a class="dropdown-item" onclick="addReststop('0010')">경부선</a>
+                                        <a class="dropdown-item" onclick="addReststop('0550')">중앙선</a>
+                                        <a class="dropdown-item" onclick="addReststop('0500')">영동선</a>
+                                    </div>
+                                    <button class ="btn btn-primary dropdown-toggle " id = "rest_stop" data-bs-toggle="dropdown">
+                                        휴게소 선택
+                                    </button>
+                                    <div class ="dropdown-menu" id = "select_restStop">
+                                    </div>
+                                </div>
+                                <!--<input type="text" placeholder="내용을 입력하세요" id="menuname"><input type="button"  onclick="Showmenu()" value="확인">-->
                                 </a>
                             </div>
                         </div>
@@ -257,14 +272,153 @@
                 </div>
             </div>
         </footer>
-
+        
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
         <!--fetch로 오픈 api 데이터 끌어오기-->
-        <script>  
+        <script>
+        
+            // 모든 자식요소들을 삭제하는 함수
+            function removeAllchild(div) {
+                while (div.hasChildNodes()) {
+                    div.removeChild(div.firstChild);
+                }
+            }
 
-            function Showmenu() {
-            menuname = document.getElementById('menuname').value
 
-            fetch('http://data.ex.co.kr/openapi/restinfo/restBestfoodList?key=6806352377&type=json&numOfRows=1000' + '&stdRestNm='+menuname).then(function(response){
+            var serviceAreaCode= "";
+
+
+            // 각 고속도로에 존재하는 휴게소 리스트를 작성하여 드랍다운 메뉴에 추가합니다.
+            function addReststop(lineNumber){
+
+                // 아래 조건문은 각 고속도로 선택시 해당 고속도로 이름이 버튼(html)에 기록되도록 하기 위함입니다.
+                let highway_Area = document.getElementById('highway');
+                if(lineNumber==='0010'){
+                    highway_Area.innerHTML = '경부선';
+                }
+                else if(lineNumber==='0550'){
+                    highway_Area.innerHTML = '중앙선';
+                }
+                else if(lineNumber==='0500'){
+                    highway_Area.innerHTML = '영동선';
+                }
+                let tagArea = document.getElementById('select_restStop'); // 드랍다운 메뉴 추가할 태그 아이디 저장
+                removeAllchild(tagArea);    // 고속도로 선택시마다 새로운 휴게소를 불러와야 하므로 현재 드랍다운 메뉴에 존재하는 자식요소 싹다 삭제합니다.
+                
+                
+
+
+                // 아래의 ajax 문을 통해서 휴게소표준 api를 불러옵니다. 각 고속도로에 대한 모든 휴게소이름과 휴게소 코드를 가져오기 위함입니다.
+                // 여기서 가져오게되는 휴게소 코드(serviceAreaCode)는 추후에 휴게소별 날씨정보 api에 있는 unitCode와 상응하는 데이터입니다.
+                var routeCodes = [];
+                var svarAddrs = [];
+                var rest_names = [];
+                var serviceAreaCodes = [];
+                // 페이지 1
+                $.ajax({
+                    url: "http://data.ex.co.kr/openapi/business/conveniServiceArea?key=1817997939&type=json&numOfRows=99&pageNo=1",
+                    async:false,
+                    success: function(data){
+                        //변수 설정
+                        userData = data;
+                    },
+                }).done(function() {
+                    var routeCode = ""; 
+                    var svarAddr = "";
+                    var rest_name = "";
+                    var data_count = userData["list"].length    // 데이터 개수 얻기
+                    
+                    for (var i =0; i<data_count; i++){
+                        routeCode = JSON.stringify(userData["list"][i]["routeCode"]);   // 고속도로 번호를 가져옵니다.
+                        rest_name = JSON.stringify(userData["list"][i]["serviceAreaName"]); // 휴게소 이름을 가져옵니다.
+                        serviceCode = JSON.stringify(userData["list"][i]["serviceAreaCode"]); // 휴게소코드를 가져옵니다.
+                        
+                        if(routeCode.substring(1,5) === lineNumber){    //  고속도로 코드가 같다면
+                            rest_names.push(rest_name); //휴게소 이름을 저장해둡니다...
+                            serviceAreaCodes.push(serviceCode); //  휴게소 코드를 저장해둡니다.
+                        }
+                    }
+                    // 아래 forEach문은 저장한 모든 휴게소에 대해, 드랍다운 버튼을 생성하기 위함입니다.
+                    rest_names.forEach(function(addr,index){
+                        let new_A_Button = document.createElement('a');   // a 속성 생성
+                        new_A_Button.setAttribute('class','dropdown-item');
+                        new_A_Button.setAttribute('onclick',"Showmenu("+rest_names[index]+")");
+                        new_A_Button.innerHTML = rest_names[index].substring(1,rest_names[index].length-1);
+                        tagArea.appendChild(new_A_Button);
+                    })
+                })
+                /*
+                // 페이지 2, 페이지 1과 모든 과정이 동일하며, 오픈 api 데이터 가져오는 특성상 페이지를 나누었습니다.
+                $.ajax({
+                    url: "http://data.ex.co.kr/openapi/business/conveniServiceArea?key=1817997939&type=json&numOfRows=99&pageNo=2",
+                    async:false,
+                    success: function(data){
+                        //변수 설정
+                        userData = data;
+                    },
+                }).done(function() {
+                    var routeCode = ""; 
+                    var svarAddr = "";
+                    var rest_name = "";
+                    var data_count = userData["list"].length    // 데이터 개수 얻기
+                    
+                    for (var i =0; i<data_count; i++){
+                        routeCode = JSON.stringify(userData["list"][i]["routeCode"]);
+                        rest_name = JSON.stringify(userData["list"][i]["serviceAreaName"]); // 휴게소 이름...
+                        serviceCode = JSON.stringify(userData["list"][i]["serviceAreaCode"]);
+                        
+                        if(routeCode.substring(1,5) === lineNumber){    //  고속도로 코드가 같다면
+                            rest_names.push(rest_name); //휴게소 이름...
+                            serviceAreaCodes.push(serviceCode);
+                        }
+                    }
+                    rest_names.forEach(function(addr,index){
+                        let new_A_Button = document.createElement('a');   // a 속성 생성
+                        new_A_Button.setAttribute('class','dropdown-item');
+                        new_A_Button.setAttribute('onclick',"Showweather("+serviceAreaCodes[index]+","+rest_names[index]+")");
+                        new_A_Button.innerHTML = rest_names[index].substring(1,rest_names[index].length-1);
+                        tagArea.appendChild(new_A_Button);
+                    })
+                })
+                // 페이지 3
+                $.ajax({
+                    url: "http://data.ex.co.kr/openapi/business/conveniServiceArea?key=1817997939&type=json&numOfRows=99&pageNo=3",
+                    async:false,
+                    success: function(data){
+                        //변수 설정
+                        userData = data;
+                    },
+                }).done(function() {
+                    var routeCode = ""; 
+                    var svarAddr = "";
+                    var rest_name = "";
+                    var data_count = userData["list"].length    // 데이터 개수 얻기
+                    
+                    for (var i =0; i<data_count; i++){
+                        routeCode = JSON.stringify(userData["list"][i]["routeCode"]);
+                        rest_name = JSON.stringify(userData["list"][i]["serviceAreaName"]); // 휴게소 이름...
+                        serviceCode = JSON.stringify(userData["list"][i]["serviceAreaCode"]);
+                        
+                        if(routeCode.substring(1,5) === lineNumber){    //  고속도로 코드가 같다면
+                            rest_names.push(rest_name); //휴게소 이름...
+                            serviceAreaCodes.push(serviceCode);
+                        }
+                    }
+                    rest_names.forEach(function(addr,index){
+                        let new_A_Button = document.createElement('a');   // a 속성 생성
+                        new_A_Button.setAttribute('class','dropdown-item');
+                        new_A_Button.setAttribute('onclick',"Showweather("+serviceAreaCodes[index]+","+rest_names[index]+")");
+                        new_A_Button.innerHTML = rest_names[index].substring(1,rest_names[index].length-1);
+                        tagArea.appendChild(new_A_Button);
+                    })
+                })*/
+
+            }
+
+            function Showmenu(rest_name) {
+            
+            console.log(rest_name);
+            fetch('http://data.ex.co.kr/openapi/restinfo/restBestfoodList?key=6806352377&type=json&numOfRows=1000' + '&stdRestNm='+rest_name).then(function(response){
                   method: 'GET';
                   body: JSON.stringify(this.obj)
                   response.text().then(function(text){
