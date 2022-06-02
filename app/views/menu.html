@@ -416,7 +416,7 @@
             }
 
             function Showmenu(rest_name) {
-            menuname = document.getElementById('menuname').value
+            
             console.log(rest_name);
             fetch('http://data.ex.co.kr/openapi/restinfo/restBestfoodList?key=6806352377&type=json&numOfRows=1000' + '&stdRestNm='+rest_name).then(function(response){
                   method: 'GET';
