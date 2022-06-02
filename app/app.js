@@ -7,6 +7,7 @@ var bodyParser = require('body-parser')
 var expressErrorHandler = require('express-error-handler');
 var indexRouter = require('./routes/index')
 var loginRouter = require('./routes/login')
+var logoutRouter = require('./routes/logout')
 var signupRouter = require('./routes/signup')
 var lpgRouter = require('./routes/lpg')
 var weatherRouter = require('./routes/weather')
@@ -21,7 +22,7 @@ var app = express();
 var router = express.Router();
 
 var cookieParser = require('cookie-parser')
-var ExpressSession = require('express-session')
+var session = require('express-session')
 
 var database = require('./database/database');
 var config = require('./config');
@@ -46,11 +47,19 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/js', express.static(__dirname + '/node_modules/bootstrap/dist/js')); // redirect bootstrap JS
 app.use('/css', express.static(__dirname + '/node_modules/bootstrap/dist/css')); // redirect CSS bootstrap
 
+//Session 처리
+app.use(cookieParser());
+app.use(session({
+    secret:'key',
+    resave: true,
+    saveUninitialized:true
+}));
 
 //
 app.use('/csv',csvRouter)
 app.use('/menu',menuRouter)
 app.use('/login',loginRouter);  // login page route
+app.use('/logout',logoutRouter);  // login page route
 app.use('/weather',weatherRouter)
 app.use('/lpg',lpgRouter)
 app.use('/signup',signupRouter); // sign up page route
@@ -60,13 +69,6 @@ app.use('/showpost',showpostRouter);
 app.use('/', indexRouter);  // main page route
 
 
-//Session 처리
-app.use(cookieParser());
-app.use(ExpressSession({
-    secret:'key',
-    resave: true,
-    saveUninitialized:true
-}));
 
 //모든 router 처리가 끝난 후 404 오류 페이지 처리
 var errorHandler = expressErrorHandler({

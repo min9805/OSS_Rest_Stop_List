@@ -4,7 +4,9 @@ var router = express.Router()
 var Entities = require('html-entities').AllHtmlEntities;
 
 router.get('/',function(req,res){
-    res.render('postadd.ejs');
+    res.render('postadd.ejs',{
+        session : req.session
+    });
 })
 
 module.exports = router;

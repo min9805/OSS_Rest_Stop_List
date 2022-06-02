@@ -36,13 +36,16 @@ router.post('/process', function(req, res) {
             // 조회된 레코드가 있으면 성공 응답 전송
 			if (docs) {
 				console.dir(docs);
-
+				req.session.sessId = paramId;
+				req.session.save();
                 // 조회 결과에서 사용자 이름 확인
-				res.render('/')
+				res.render('index.html',{
+					session : req.session
+				});
 
 			
 			} else {  // 조회된 레코드가 없는 경우 실패 응답 전송
-				res.render('/')
+				res.render('login.html');
 
 			}
 		});
