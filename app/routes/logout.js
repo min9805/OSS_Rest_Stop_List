@@ -8,7 +8,7 @@ router.get('/',function(req,res){
 	req.session.destroy(function() {
 		req.session;
 	});
-    res.render('index.html')
+    res.render('index.ejs')
 });
 
 module.exports = router

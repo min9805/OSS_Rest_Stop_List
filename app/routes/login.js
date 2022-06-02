@@ -6,7 +6,7 @@ var router = express.Router();
 
 router.get('/',function(req,res){
    
-    res.render('login.html')
+    res.render('login.ejs',{session:req.session})
 });
 
 router.post('/process', function(req, res) {
@@ -39,13 +39,13 @@ router.post('/process', function(req, res) {
 				req.session.sessId = paramId;
 				req.session.save();
                 // 조회 결과에서 사용자 이름 확인
-				res.render('index.html',{
+				res.render('index.ejs',{
 					session : req.session
 				});
 
 			
 			} else {  // 조회된 레코드가 없는 경우 실패 응답 전송
-				res.render('login.html');
+				res.render('login.ejs');
 
 			}
 		});

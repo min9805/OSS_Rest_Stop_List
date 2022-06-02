@@ -3,7 +3,7 @@ var Conn = require('../database/database')
 var router = express.Router()
 
 router.get('/',function(req,res){
-    res.render('signup.html')
+    res.render('signup.ejs',{session:req.session})
 });
 
 router.post('/process', function(req, res) {
