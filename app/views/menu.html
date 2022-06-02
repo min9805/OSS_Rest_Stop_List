@@ -54,7 +54,7 @@
                             <div class="text-center my-5">
                                 <h1 class="fw-bolder mb-3">휴게소 메뉴 정보</h1>
                                 <p class="lead fw-normal text-muted mb-4">Just search the name of the rest stop,<br>You'll find out what kind of food there is at the rest area.</p>
-                                <p><h3>검색할 휴게소의 이름을 입력하세요</h3></p>
+                                
                                 <div class="dropdown">
                                 
                                     <button class ="btn btn-primary dropdown-toggle " id="highway" data-bs-toggle="dropdown">
@@ -71,7 +71,7 @@
                                     <div class ="dropdown-menu" id = "select_restStop">
                                     </div>
                                 </div>
-                                <input type="text" placeholder="내용을 입력하세요" id="menuname"><input type="button"  onclick="Showmenu()" value="확인">
+                                <!--<input type="text" placeholder="내용을 입력하세요" id="menuname"><input type="button"  onclick="Showmenu()" value="확인">-->
                                 </a>
                             </div>
                         </div>
@@ -416,7 +416,7 @@
             }
 
             function Showmenu(rest_name) {
-            menuname = document.getElementById('menuname').value
+            
             console.log(rest_name);
             fetch('http://data.ex.co.kr/openapi/restinfo/restBestfoodList?key=6806352377&type=json&numOfRows=1000' + '&stdRestNm='+rest_name).then(function(response){
                   method: 'GET';
