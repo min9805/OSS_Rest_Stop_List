@@ -314,7 +314,8 @@
             }
 
             function Showmenu(rest_name) {
-            
+                let rest_stop = document.getElementById('rest_stop');   // 해당 줄과 바로 아랫줄은 드랍다운 버튼선택시 해당 휴게소이름을 html에 적용하기 위함입니다.
+                rest_stop.innerHTML =rest_name;
             console.log(rest_name);
             fetch('http://data.ex.co.kr/openapi/restinfo/restBestfoodList?key=6806352377&type=json&numOfRows=1000' + '&stdRestNm='+rest_name).then(function(response){
                   method: 'GET';

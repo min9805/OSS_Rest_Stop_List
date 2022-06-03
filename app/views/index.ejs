@@ -28,6 +28,18 @@
             }
             // 고속도로 선택 함수
             function showline(lineNumber){
+
+
+                let highway_Area = document.getElementById('highway');
+                if(lineNumber==='0010'){
+                    highway_Area.innerHTML = '경부선';
+                }
+                else if(lineNumber==='0550'){
+                    highway_Area.innerHTML = '중앙선';
+                }
+                else if(lineNumber==='0500'){
+                    highway_Area.innerHTML = '영동선';
+                }
                 // 이 위치에 이전에 켜져있는 map을 지우는 기능 넣어야해 ...
                 var container = document.getElementById('map'); //지도를 담을 영역의 DOM 레퍼런스
                 
@@ -253,7 +265,7 @@
                                 <h1 class="display-5 fw-bolder text-white mb-2">고속도로선택시 경로와 휴게소가 지도에 표시됩니다.</h1>
                                 <p class="lead fw-normal text-white-50 mb-4">고속도로를 선택해주세요</p>
                                 <div class="dropdown">
-                                    <button class ="btn btn-primary dropdown-toggle " data-bs-toggle="dropdown">
+                                    <button class ="btn btn-primary dropdown-toggle " id= "highway"data-bs-toggle="dropdown">
                                         고속도로 선택
                                     </button>
                                     <div class ="dropdown-menu">
