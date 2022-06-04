@@ -19,7 +19,7 @@
     "express-session": "^1.17.3",
     "html-entities": "^1.2.0",
     "http": "^0.0.1-security",
-    "mongoose": "^6.3.4",
+    "mongoose": "^6.3.5",
     "mysql": "^2.18.1",
     "path": "^0.12.7",
     "serve-static": "^1.15.0"

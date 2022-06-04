@@ -57,7 +57,6 @@ router.post('/process', function(req, res) {
 		res.write('<div><p>데이터베이스에 연결하지 못했습니다.</p></div>');
 		res.end();
 	}
-
 });
 
 //사용자를 인증하는 함수 : 아이디로 먼저 찾고 비밀번호를 그 다음에 비교하도록 함
