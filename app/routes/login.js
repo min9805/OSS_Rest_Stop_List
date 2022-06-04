@@ -45,7 +45,9 @@ router.post('/process', function(req, res) {
 
 			
 			} else {  // 조회된 레코드가 없는 경우 실패 응답 전송
-				res.render('login.ejs');
+				res.render('login.ejs',{
+					session : req.session
+				});
 
 			}
 		});

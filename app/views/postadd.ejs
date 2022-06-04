@@ -1,7 +1,7 @@
 <%- include('./header.ejs') %>
-
-        <!-- Page Content-->
-        <div class="ui raised segment">
+<% if(session.sessId){ %>
+	       <!-- Page Content-->
+		   <div class="ui raised segment">
 			<a class="ui blue ribbon label">게시판</a>
      			<span id="board_title">글쓰기</span>
 		
@@ -24,15 +24,7 @@
 				    		<label>내용</label>
 				    		<textarea id="contents" name="contents" rows="10" cols="80"></textarea>
 				  		</div>		
-								
-						<div class="two fields">
-				    		<div class="field">
-				      			<label>작성자</label>
-								<input type="text" name="writer" placeholder="작성자아이디 입력">
-							</div>
-							<div class="field"></div>
-						</div>
-								 
+										 
 						<input class="ui submit button" type="submit" value="추가" name="" />
 						<input class="ui button" type="button" value="취소" name="" onclick="javascript:history.back()" />
 					</form>
@@ -44,5 +36,21 @@
 		</div>
  
     </main>
+<% } else { %>
+	       <!-- Page Content-->
+			<div class="ui blue fluid card">
+				 <div class="content">
+			       		 
+					<form class="content ui form" method="post" action="/post/addpost">
+						<h4 class="ui dividing header">로그인이 필요합니다.</h4>
+						<br><br>
+						<a class="nav-link" href="/post">되돌아가기</a>
+					
+				</div>
+			</div>
+		</div>
+ 
+    </main>
+<% } %>
     <!-- Footer-->
     <%- include('./footer.ejs') %>

@@ -7,8 +7,8 @@ var router = express.Router();
 router.get('/',function(req,res){
 	req.session.destroy(function() {
 		req.session;
+		res.redirect('/');
 	});
-    res.render('index.ejs')
 });
 
 module.exports = router

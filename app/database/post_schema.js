@@ -6,10 +6,10 @@ var SchemaObj = {};
 	 var PostSchema = mongoose.Schema({
 		 title: {type: String, trim: true, 'default':''},		// 글 제목
 		 contents: {type: String, trim:true, 'default':''},						// 글 내용
-		 writer: {type: mongoose.Schema.ObjectId, ref: 'users'},							// 글쓴 사람
+		 writer: {type: String, 'default': ''},							// 글쓴 사람
 		 comments: [{		// 댓글
 			 contents: {type: String, trim:true, 'default': ''},					// 댓글 내용
-			 writer: {type: mongoose.Schema.ObjectId, ref: 'users'},
+			 writer: {type: String, 'default': ''},
 			 created_at: {type: Date, 'default': Date.now}
 		 }],
 		 tags: {type: [], 'default': ''},

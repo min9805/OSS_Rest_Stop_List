@@ -6,9 +6,7 @@ router.get('/:id',function(req,res){
   
     // URL 파라미터로 전달됨
     var paramId = req.body.id || req.query.id || req.params.id;
-	
-    console.log('요청 파라미터 : ' + paramId);
-    
+	    
     
 	var database = req.app.get('database');
 	
@@ -28,7 +26,6 @@ router.get('/:id',function(req,res){
             }
 			
 			if (results) {
-				console.dir(results);
   
 				res.writeHead('200', {'Content-Type':'text/html;charset=utf8'});
 				

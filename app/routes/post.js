@@ -82,46 +82,19 @@ router.get('/',function(req,res){
 router.post('/addpost', function(req, res) {
 	var paramTitle = req.body.title || req.query.title;
     var paramContents = req.body.contents || req.query.contents;
-    var paramWriter = req.body.writer || req.query.writer;
+    var paramWriter = req.session.sessId;
 	
-    console.log('요청 파라미터 : ' + paramTitle + ', ' + paramContents + ', ' + 
-               paramWriter);
-    
 	var database = req.app.get('database');
 	
 	// 데이터베이스 객체가 초기화된 경우
 	if (database.db) {
 		
-		// 1. 아이디를 이용해 사용자 검색
-		database.UserModel.findById(paramWriter, function(err, results) {
-			if (err) {
-                console.error('게시판 글 추가 중 에러 발생 : ' + err.stack);
-                
-                res.writeHead('200', {'Content-Type':'text/html;charset=utf8'});
-				res.write('<h2>게시판 글 추가 중 에러 발생</h2>');
-                res.write('<p>' + err.stack + '</p>');
-				res.end();
-                
-                return;
-            }
-
-			if (results == undefined || results.length < 1) {
-				res.writeHead('200', {'Content-Type':'text/html;charset=utf8'});
-				res.write('<h2>사용자 [' + paramWriter + ']를 찾을 수 없습니다.</h2>');
-				res.end();
-				
-				return;
-			}
-			
-			var userObjectId = results[0]._doc._id;
-			console.log('사용자 ObjectId : ' + paramWriter +' -> ' + userObjectId);
-			
 			// save()로 저장
 			// PostModel 인스턴스 생성
 			var post = new database.PostModel({
 				title: paramTitle,
 				contents: paramContents,
-				writer: userObjectId
+				writer: paramWriter
 			});
 
 			post.savePost(function(err, result) {
@@ -143,14 +116,7 @@ router.post('/addpost', function(req, res) {
 			    
 			    return res.redirect('/post'); 
 			});
-			
-		});
-		
-	} else {
-		res.writeHead('200', {'Content-Type':'text/html;charset=utf8'});
-		res.write('<h2>데이터베이스 연결 실패</h2>');
-		res.end();
-	}
+		}
 });
 
 module.exports = router;
