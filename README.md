@@ -38,14 +38,15 @@
 ## Roadmap
 1. build server (nodejs &express)
 2. adapt css (bootstrap)
-3. add map api for highway & rest stop
+3. add map api for highway & rest stop (kakao map api)
 4. connect database(mongoose)
 4. fetch api for rest stop weather, food menu and LPG gas station
 5. add login/sign up
+6. continue...
 
 
 ## Contributing
-please follow the steps below for contributing
+please follow the steps below for contributing this Project
 1. git fork
 2. create branch from master
 3. modify project
