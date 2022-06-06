@@ -4,9 +4,9 @@
 2. [Getting started](#getting started)
 2. [Features](#features)
 3. [Roadmap](#roadmap)
+4. [Architecture](#architecture)
 4. [Contributing](#contributing)
-5. [License](#license)
-6. [Contact](#contact)
+5. [Contact](#contact)
 
 ## About the project
 
@@ -44,6 +44,9 @@
 5. add login/sign up
 6. continue...
 
+
+## Architecture
+![proeject_architecture.png](./img/proeject_architecture.png)
 
 ## Contributing
 please follow the steps below for contributing this Project
