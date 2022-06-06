@@ -1,15 +1,12 @@
-
-
-
 # Index
 
-1. [About the project](#About-the-project)
-2. [Getting started](#Getting started)
-2. [Features](#Features)
-3. [Roadmap](#Roadmap)
-4. [Contributing](#Contributing)
-5. [License](#License)
-6. [Contact](#Contact)
+1. [About the project](#about-the-project)
+2. [Getting started](#getting started)
+2. [Features](#features)
+3. [Roadmap](#roadmap)
+4. [Contributing](#contributing)
+5. [License](#license)
+6. [Contact](#contact)
 
 ## About the project
 
