@@ -58,5 +58,5 @@ please follow the steps below for contributing this Project
 
 ## Contact
 - 지창언 gentleking95@khu.ac.kr
-- 김민규
+- 김민규 min1925k@khu.ac.kr
 - 이서현
